@@ -1,0 +1,165 @@
+channel {
+    color:#0000ff;
+    font-weight:bold;
+}
+
+channel:hover {
+    cursor:pointer;
+}
+
+#channelController {
+    background-color:#ccffff;
+    padding:10px;
+    border-width:1px;
+    border-style:solid;
+}
+
+#measurement {
+    height:95px;
+    padding:5px;
+    border-width:1px;
+    border-style:solid;
+}
+
+#nominal {
+    height:195px;
+    padding:5px;
+    border-width:1px;
+    border-style:solid;
+}
+
+#supervision {
+    height:145px;
+    padding:5px;
+    border-width:1px;
+    border-style:solid;
+}
+
+.title {
+    height:30px;
+}
+
+.frameTitle {
+    font-weight:bold;
+    text-indent:20px;
+    height:25px;
+}
+
+.frameBreak {
+    clear:both;
+    height:10px;
+}
+
+.frameSpace {
+    float:left;
+    width:50px;
+}
+
+.frameSpace2 {
+    float:left;
+    width:20px;
+}
+
+.measLeftFrame {
+    float:left;
+    width:260px;
+}
+
+.measRightFrame {
+    float:left;
+    width:290px;
+}
+
+.measLeftLabel {
+    float:left;
+    width:180px;
+    height:25px;
+}
+
+.measRightLabel {
+    float:left;
+    width:210px;
+    height:25px;
+}
+
+.nomLeftFrame {
+    float:left;
+    width:335px;
+}
+
+.nomRightFrame {
+    float:left;
+    width:250px;
+}
+
+.nomBottomFrame {
+    width:600px;
+}
+
+.nomLeftLabel {
+    float:left;
+    width:170px;
+    height:25px;
+}
+
+.nomRightLabel {
+    float:left;
+    width:185px;
+    height:25px;
+}
+
+.nomBottomLabel {
+    float:left;
+    width:545px;
+    height:25px;
+}
+
+.supLabel {
+    float:left;
+    width:215px;
+    height:25px;
+}
+
+.buttonsFrame {
+    vertical-align:center;
+    text-align:center;
+    width:600px;
+    height:20px;
+}
+
+.button {
+    width:200px;
+}
+
+.info {
+    float:left;
+    width:100px;
+    text-align:right;
+}
+
+.info2 {
+    float:left;
+    width:150px;
+    text-align:left;
+}
+
+.input {
+    float:left;
+    width:55px;
+    text-align:right;
+}
+
+.value {
+    float:left;
+    width:80px;
+    text-align:right;
+}
+
+.value2 {
+    float:left;
+    width:210px;
+}
+
+.clear {
+    clear:both;
+}
