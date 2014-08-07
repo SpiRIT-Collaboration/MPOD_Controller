@@ -219,7 +219,7 @@
 //        setData("outputSupervisionMaxPower." + channelName, "F", document.getElementById("SupMaxT").value);
 //        setData("outputFailureMaxPower." + channelName, "F", document.getElementById("SupMaxTFail").value);
 
-        setViewChannelController("", "none");
+        setViewChannelController("", "");
     }
     // -----------------------------------------------------------------------
 

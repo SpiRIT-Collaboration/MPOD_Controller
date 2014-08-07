@@ -162,8 +162,8 @@
             </div>
             <div class='frameBreak'></div>
             <div class='buttonsFrame'>
-                <input type='button' class='button' onclick='updateChannel()' value='Confirm'>&nbsp;
-                <input type='button' class='button' onclick='setViewChannelController("", "none");' value='Cancel'>
+                <input type='button' class='button' onclick='updateChannel()' value='Apply'>&nbsp;
+                <input type='button' class='button' onclick='setViewChannelController("", "none");' value='Close'>
             </div>
         </div>
     </body>
