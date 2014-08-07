@@ -90,6 +90,9 @@
                     <div class='clear'></div>
                     <div class='nomBottomLabel'>Slow Regulation (Cable length &#62; 50m)</div>
                     <div class='input'><input type='radio' name='NomR' value='2'></div>
+                    <div class='clear'></div>
+                    <div class='nomBottomLabel'>Internal Sensing</div>
+                    <div class='input'><input type='checkbox' name='IntSen'></div>
                     <!-- not used
                     <div class='nomBottomLabel'>reserved</div>
                     <div class='input'><input type='checkbox' id='reserved'></div>

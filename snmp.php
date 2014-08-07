@@ -8,7 +8,7 @@
 if (isset($_GET['ip']) && $_GET['ip'] != '')
     $ip = $_GET['ip'];
 else
-    $ip = '172.27.224.69';
+    $ip = '10.32.8.81';
 
 snmp_set_quick_print(TRUE);
 snmp_read_mib('./WIENER-CRATE-MIB.txt');
@@ -247,6 +247,7 @@ if (substr($get, 0, 1) == 'u') {
     echo '"outputVoltageFallRateUnit":"'.$NomRDUnit.'",';
     echo '"outputNoRampAtSwitchOff":'.$NomNRSO.',';
     echo '"outputRegulationMode":'.$NomR.',';
+    echo '"internalSenseUse":'.$IntSen.',';
     echo '"outputSupervisionMinSenseVoltage":'.$SupMinSV.',';
     echo '"outputSupervisionMinSenseVoltageUnit":"'.$SupMinSVUnit.'",';
     echo '"outputFailureMinSenseVoltage":'.$SupMinSVFail.',';
@@ -300,6 +301,11 @@ if (isset($_GET['set'])) {
         $oldvalue = snmpget($ip, 'public', $set, 5000, 0);
         $oldvalue = ($oldvalue & 0x39);
         $value = ($oldvalue | ($value << 1));
+    } else if ($parameter == 'internalSenseUse') {
+        $set = 'outputUserConfig.'.$channel;
+        $oldvalue = snmpget($ip, 'public', $set, 5000, 0);
+        $oldvalue = ($oldvalue & 0x37);
+        $value = ($oldvalue | ($value << 3));
     } else if ($parameter == 'outputFailureMinSenseVoltage') {
         $set = 'outputSupervisionBehavior.'.$channel;
         $oldvalue = snmpget($ip, 'public', $set, 5000, 0);

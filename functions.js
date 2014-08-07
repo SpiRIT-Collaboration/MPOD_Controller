@@ -153,6 +153,7 @@
         document.getElementById("NomRD").value = numberFormat(channelData.outputVoltageFallRate);
         document.getElementById("NomNRSO").checked = channelData.outputNoRampAtSwitchOff;
         document.getElementsByName("NomR")[channelData.outputRegulationMode].checked = true;
+        document.getElementsByName("IntSen")[channelData.internalSenseUse].checked = true;
 
         document.getElementById("SupMinSV").value = numberFormat(channelData.outputSupervisionMinSenseVoltage);
         document.getElementById("SupMinSVFail").value = channelData.outputFailureMinSenseVoltage;
@@ -204,6 +205,7 @@
             if (document.getElementsByName("NomR")[i].checked == true)
                 setData("outputRegulationMode." + channelName, "i", i);
 
+        setData("internalSenseUse." + channelName, "i", document.getElementByName("IntSen").checked);
         setData("outputSupervisionMinSenseVoltage." + channelName, "F", document.getElementById("SupMinSV").value);
         setData("outputFailureMinSenseVoltage." + channelName, "i", document.getElementById("SupMinSVFail").value);
         setData("outputSupervisionMaxSenseVoltage." + channelName, "F", document.getElementById("SupMaxSV").value);
