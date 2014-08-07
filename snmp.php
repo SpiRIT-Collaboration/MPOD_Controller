@@ -8,7 +8,7 @@
 if (isset($_GET['ip']) && $_GET['ip'] != '')
     $ip = $_GET['ip'];
 else
-    $ip = '10.32.8.81';
+    $ip = '192.168.40.70';
 
 snmp_set_quick_print(TRUE);
 snmp_read_mib('./WIENER-CRATE-MIB.txt');
@@ -127,6 +127,7 @@ if (substr($get, 0, 1) == 'u') {
     $NomRDUnit = $data[1];
     $NomNRSO = (snmpget($ip, 'public', 'outputUserConfig.'.$ch, 2000, 0) & 0x1);
     $NomR = ((snmpget($ip, 'public', 'outputUserConfig.'.$ch, 2000, 0) & 0x6) >> 1);
+    $IntSen = ((snmpget($ip, 'public', 'outputUserConfig.'.$ch, 2000, 0) & 0x8) >>3);
 
     // Supervision Part
     $SupBehavior = snmpget($ip, 'public', 'outputSupervisionBehavior.'.$ch, 2000, 0);
