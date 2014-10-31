@@ -7,6 +7,7 @@
 {
     // Initialization Part ---------------------------------------------------
     function init() {
+        getData("ipAddress", printIPAddress);
         printPowerStatus("Off");
         getData("powerStatus", printPowerStatus);
         setInterval(function() {getData("powerStatus", printPowerStatus);}, 5001);
@@ -18,6 +19,18 @@
         getData("channels", buildChannelList);
         timerForChannels = setInterval(function() {getData("channels", buildChannelList);}, 5000);
     }
+    // -----------------------------------------------------------------------
+    
+    // Change IP Part --------------------------------------------------------
+    function printIPAddress(ipAddress) {
+        document.getElementById('ipAddress').value = ipAddress;
+    } 
+    // -----------------------------------------------------------------------
+    // Change IP Part --------------------------------------------------------
+    function changeIP() {
+        var newIP = document.getElementById('ipAddress').value; 
+        setData("changeIP", "", newIP);
+    } 
     // -----------------------------------------------------------------------
     
     // Power Switch Part -----------------------------------------------------

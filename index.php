@@ -15,6 +15,12 @@
     </head>
     <body>
         <h1>MPOD HV&LV Power Supply System Controller</h1>
+        <div class='plain'>Create IP Address:</div>
+        <div class='plain'><input type='text' class='ipAddress' id='ipAddress' value='0.0.0.0' /></div>
+        <div class='plain'><input type='button' value='Change' onclick='changeIP()' /></div>
+        <div class='clear'></div>
+        <div class='frameSpace'>&nbsp;</div>
+        <div class='clear'></div>
         <div id='cratePower'>Loading Crate Power Status</div>
         <p>It takes a few seconds for the settings to be applied.<br>Don't change properties too fast.</p>
         <p>Make sure that the settings are changed before you turn on!</p>

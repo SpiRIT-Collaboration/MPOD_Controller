@@ -45,6 +45,10 @@ channel:hover {
     height:25px;
 }
 
+.plain {
+    float:left;
+}
+
 .frameBreak {
     clear:both;
     height:10px;
@@ -141,6 +145,11 @@ channel:hover {
     float:left;
     width:150px;
     text-align:left;
+}
+
+.ipAddress {
+  text-align:center;
+  width:100px;
 }
 
 .input {

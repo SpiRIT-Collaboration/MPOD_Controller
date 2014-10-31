@@ -5,10 +5,9 @@
 //   Date: 2013. 07. 17
 //---------------------------------
 
-if (isset($_GET['ip']) && $_GET['ip'] != '')
-    $ip = $_GET['ip'];
-else
-    $ip = '192.168.40.70';
+$ipFile = fopen('ip.address', 'r');
+$ip = fgets($ipFile);
+fclose($ipFile);
 
 snmp_set_quick_print(TRUE);
 snmp_read_mib('./WIENER-CRATE-MIB.txt');
@@ -16,6 +15,10 @@ snmp_read_mib('./WIENER-CRATE-MIB.txt');
 // Getting Part
 if (isset($_GET['get']))
     $get = $_GET['get'];
+
+if ($get == 'ipAddress') {
+    echo $ip;
+}
 
 if ($get == 'powerStatus') {
     $status = snmpget($ip, 'public', 'sysMainSwitch.0', 5000, 0);
@@ -331,6 +334,12 @@ if (isset($_GET['set'])) {
         $oldvalue = ($oldvalue & 0xff3f);
         $value = ($oldvalue | ($value << 6));
         echo $channel." ".$parameter." ".$value;
+    }
+
+    if ($set == 'changeIP') {
+        $ipFile = fopen('ip.address', 'w+') or die("Unable to open file!");
+        fwrite($ipFile, $value);
+        fclose($ipFile);
     }
 
     if ($set == 'powerSwitch') {
