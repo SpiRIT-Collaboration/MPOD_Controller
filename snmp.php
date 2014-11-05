@@ -36,6 +36,7 @@ if ($get == 'channels') {
                            'outputMeasurementCurrent',
                            'outputMeasurementSenseVoltage',
                            'outputMeasurementTerminalVoltage',
+                           'outputGroup',
                            'outputSwitch');
     
     $numData = count($dataNameArray);
@@ -54,11 +55,13 @@ if ($get == 'channels') {
             for ($j = 0; $j < $numData; $j++) {
                 $data = snmpget($ip, 'public', $dataNameArray[$j].'.'.strtolower($nameArray[$i]), 2000, 0);
 
-                if ($j < $numData - 1) {
+                if ($j < $numData - 2) {
                     $valueNunit = explode(' ', $data);
     
                     echo '"'.$dataNameArray[$j].'":'.$valueNunit[0].',';
                     echo '"'.$dataNameArray[$j].'Unit":"'.$valueNunit[1].'",';
+                } else if ($j < $numData - 1) {
+                    echo '"'.$dataNameArray[$j].'":'.$data.',';
                 } else {
                     echo '"'.$dataNameArray[$j].'":"'.$data.'"';
                 }
@@ -160,6 +163,10 @@ if (substr($get, 0, 1) == 'u') {
     $SupMaxIMax = $data[0];
     $SupMaxIMaxUnit = $data[1];
     $SupMaxIFail = (($SupBehavior & 0xc0) >> 6);
+
+    // Group Part
+//    $Group = snmpget($ip, 'public', 'outputGroup'.$ch, 2000, 0));
+
     /*
     $data = explode(' ', snmpget($ip, 'public', 'outputSupervisionMaxTemperature.'.$ch, 2000, 0));
     $SupMaxT = 0; //$data[0];

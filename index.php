@@ -23,7 +23,7 @@
         <div class='clear'></div>
         <div id='cratePower'>Loading Crate Power Status</div>
         <p>It takes a few seconds for the settings to be applied.<br>Don't change properties too fast.</p>
-        <p>Make sure that the settings are changed before you turn on!</p>
+        <p><b>Make sure if the settings are properly changed before you turn on!</b></p>
         <hr>
         <div id='channelList'>Turn On the Crate to See the Channel List</div>
 
