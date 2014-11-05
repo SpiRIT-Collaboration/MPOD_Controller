@@ -172,3 +172,28 @@ channel:hover {
 .clear {
     clear:both;
 }
+
+.groupController {
+    position:absolute;
+    left:700px;
+    top:262px;
+    width:265px;
+    height:200px;
+    background-color:#ccffff;
+    padding:10px;
+    border-width:1px;
+    border-style:solid;
+}
+
+.groupButton {
+    width:264px;
+}
+
+.groupSwitchDiv {
+    float:left;
+    width:55px;
+}
+
+.groupSwitch {
+    width:50px;
+}

@@ -116,6 +116,14 @@
             }
             channelList += "</select></td><td>";
             channelList += "<input type='button' value='" + capitalize(channelsData[i].data.outputSwitch) + "' onclick='setData(\"outputSwitch." + channelsData[i].name + "\", \"i\", " + (channelsData[i].data.outputSwitch == "on" ? "0" : "1") + ");'>";
+/*            if (channelsData[i].data.outputSwitch == "on") {
+                channelList += "<input type='button' value='On' onclick='setData(\"outputSwitch." + channelsData[i].name + "\", \"i\", \"1\");'>";
+                channelList += "<input type='button' value='Off' disabled>";
+            } else {
+                channelList += "<input type='button' value='On' disabled>";
+                channelList += "<input type='button' value='Off' onclick='setData(\"outputSwitch." + channelsData[i].name + "\", \"i\", \"0\");'>";
+            }
+            */
             channelList += "</td></tr>";
         }
 
@@ -129,6 +137,38 @@
 
         var channelListTable = document.getElementById("channelList");
         channelListTable.innerHTML = header + channelList + footer;
+
+        printGroupController();
+    }
+    // -----------------------------------------------------------------------
+
+    // Group Controller Part------------------------------------------------
+    function printGroupController() {
+        document.getElementById("groupController").style.display = "";
+
+        var groupList = "<select id='selectedGroup'>";
+        for (var iGroup = 0; iGroup < 64; iGroup++) {
+            if (iGroup != 0)
+                groupList += "<option value='" + iGroup + "'>" + iGroup + "</option>";
+            else
+                groupList += "<option value='" + iGroup + "'>All</option>";
+        }
+        groupList += "</select>";
+        document.getElementById("GC_groupList").innerHTML = groupList;
+    }
+
+    function groupSet(setting) {
+        if (setting == "resetEmergencyOff") {
+            var button = confirm("Leave \"Emergency Off\" state.\nYou must \"Clear Events\" to use the group!");
+        } else if (setting == "setEmergencyOff") {
+            var button = confirm("Set \"Emergency Off\" state.\nThis will switch off the group without ramping!");
+        } else if (setting == "enableKill") {
+            var button = confirm("Enable kill of the group?");
+        } else if (setting == "disableKill") {
+            var button = confirm("Disable kill of the group?");
+        } else if (setting == "clearEvents") {
+            var button = confirm("Clear failure state of the group?");
+        }
     }
     // -----------------------------------------------------------------------
 
@@ -244,7 +284,7 @@
     }
     // -----------------------------------------------------------------------
 
-    // Getter and Setter -----------------------------------------------------
+    // Getter and Setter for data reading ------------------------------------
     function getData(dataName, runFn) {
         var request = new XMLHttpRequest();
         request.onreadystatechange = function() {
@@ -264,6 +304,31 @@
     function setData(dataName, type, value) {
         var request = new XMLHttpRequest();
         var url = "./snmp.php?set=" + dataName + "&type=" + type + "&value=" + value;
+        request.open("POST", url);
+        request.send();
+    }
+    // -----------------------------------------------------------------------
+
+    // Getter and Setter for setting reading ------------------------------------
+    function readSetting(settingName, runFn) {
+        var request = new XMLHttpRequest();
+        request.onreadystatechange = function() {
+            // readyState: 4 - Request complete
+            // status: 200 - Request successful
+            if(request.readyState == 4 && request.status == 200) {
+                var data = request.responseText;
+                runFn(data);
+            }
+        }
+        var url = "./setting.php?read=" + settingName;
+        request.open("GET", url);
+        request.send();
+        delete request;
+    }
+
+    function writeSetting(settingName, value) {
+        var request = new XMLHttpRequest();
+        var url = "./setting.php?write=" + settingName + "&value=" + value;
         request.open("POST", url);
         request.send();
     }

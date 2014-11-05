@@ -27,6 +27,24 @@
         <hr>
         <div id='channelList'>Turn On the Crate to See the Channel List</div>
 
+        <!-- Group Controller -->
+        <div id='groupController' class='groupController'>
+            <div class='title'>Group Controller</div>
+            <div class='clear'></div>
+            <div style='float:left;'>Selected group:</div>
+            <div id='GC_groupList' class='groupSwitchDiv'>GC_groupList</div>
+            <input type='button' class='groupSwitch' value='On' onclick=''>
+            <input type='button' class='groupSwitch' value='Off' onclick=''>
+            <input type='button' class='groupButton' value='Change group setting' onclick=''>
+            <p></p>
+            <input type='button' class='groupButton' value='Reset emergency off' onclick='groupSet("resetEmergencyOff");'>
+            <input type='button' class='groupButton' value='Set emergency off' onclick='groupSet("setEmergencyOff");'>
+            <input type='button' class='groupButton' value='Enable kill' onclick='groupSet("enableKill");'>
+            <input type='button' class='groupButton' value='Disable kill' onclick='groupSet("disableKill");'>
+            <input type='button' class='groupButton' value='Clear events' onclick='groupSet("clearEvents");'>
+        </div>
+
+        <!-- Channel Controller -->
         <div id='channelController' style='display:none;'>
             <div id='title' class='title'>CHANNELNAME Output Configuration</div>
             <input type='hidden' id='ch' value=''>
