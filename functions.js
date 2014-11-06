@@ -7,7 +7,7 @@
 {
     // Initialization Part ---------------------------------------------------
     function init() {
-        getData("ipAddress", printIPAddress);
+        readSetting("IPAddress", printIPAddress);
         printPowerStatus("Off");
         getData("powerStatus", printPowerStatus);
         setInterval(function() {getData("powerStatus", printPowerStatus);}, 5001);
@@ -25,11 +25,10 @@
     function printIPAddress(ipAddress) {
         document.getElementById('ipAddress').value = ipAddress;
     } 
-    // -----------------------------------------------------------------------
-    // Change IP Part --------------------------------------------------------
+
     function changeIP() {
         var newIP = document.getElementById('ipAddress').value; 
-        setData("changeIP", "", newIP);
+        writeSetting("IPAddress", newIP);
     } 
     // -----------------------------------------------------------------------
     
