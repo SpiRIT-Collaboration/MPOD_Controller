@@ -14,10 +14,12 @@
     }
 
     var timerForChannels;
+    var timerForGC;
     var powerStatusForChannels = "Off";
     function initChannels() {
         getData("channels", buildChannelList);
         timerForChannels = setInterval(function() {getData("channels", buildChannelList);}, 5000);
+        timerForGC = setInterval(function() {readSetting("SelectedGroup", printGroupController);}, 5000);
     }
     // -----------------------------------------------------------------------
     
@@ -49,8 +51,10 @@
                 initChannels()
             else {
                 clearTimeout(timerForChannels);
+                clearTimeout(timerForGC);
                 document.getElementById('channelList').innerHTML = "Turn On the Crate to See the Channel List";
                 document.getElementById('channelController').display = "none";
+                document.getElementById('groupController').display = "none";
             }
         }
     }
@@ -136,21 +140,19 @@
 
         var channelListTable = document.getElementById("channelList");
         channelListTable.innerHTML = header + channelList + footer;
-
-        printGroupController();
     }
     // -----------------------------------------------------------------------
 
     // Group Controller Part------------------------------------------------
-    function printGroupController() {
+    function printGroupController(selectedGroup) {
         document.getElementById("groupController").style.display = "";
 
-        var groupList = "<select id='selectedGroup'>";
+        var groupList = "<select id='selectedGroup' onchange='writeSetting(\"SelectedGroup\", value);'>";
         for (var iGroup = 0; iGroup < 64; iGroup++) {
             if (iGroup != 0)
-                groupList += "<option value='" + iGroup + "'>" + iGroup + "</option>";
+                groupList += "<option value='" + iGroup + "'" + (selectedGroup == iGroup ? "selected" : "") + ">" + iGroup + "</option>";
             else
-                groupList += "<option value='" + iGroup + "'>All</option>";
+                groupList += "<option value='" + iGroup + "'" + (selectedGroup == iGroup ? "selected" : "") + ">All</option>";
         }
         groupList += "</select>";
         document.getElementById("GC_groupList").innerHTML = groupList;
