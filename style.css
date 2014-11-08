@@ -149,7 +149,7 @@ channel:hover {
 
 .ipAddress {
   text-align:center;
-  width:100px;
+  width:120px;
 }
 
 .input {
@@ -176,9 +176,9 @@ channel:hover {
 .groupController {
     position:absolute;
     left:700px;
-    top:262px;
-    width:265px;
-    height:200px;
+    top:266px;
+    width:286px;
+    height:220px;
     background-color:#ccffff;
     padding:10px;
     border-width:1px;
@@ -186,7 +186,7 @@ channel:hover {
 }
 
 .groupButton {
-    width:264px;
+    width:286px;
 }
 
 .groupSwitchDiv {
