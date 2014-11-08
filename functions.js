@@ -18,6 +18,7 @@
   var powerStatusForChannels = "Off";
   function initChannels() {
     getData("channels", buildChannelList);
+    readSetting("selectedGroup", printGroupController);
     timerForChannels = setInterval(function() {getData("channels", buildChannelList);}, 5000);
     timerForGC = setInterval(function() {readSetting("SelectedGroup", printGroupController);}, 5000);
   }
@@ -161,13 +162,13 @@
   function groupOn() {
     var selectedGroup = document.getElementById("selectedGroup").value;
 
-    setData("groupSwitch." + selectedGroup, "i", 1);
+    setData("groupsSwitch." + selectedGroup, "i", 1);
   }
 
   function groupOff() {
     var selectedGroup = document.getElementById("selectedGroup").value;
 
-    setData("groupSwitch." + selectedGroup, "i", 0);
+    setData("groupsSwitch." + selectedGroup, "i", 0);
   }
 
   function groupSet(setting) {
