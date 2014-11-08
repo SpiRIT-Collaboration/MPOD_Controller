@@ -33,8 +33,8 @@
             <div class='clear'></div>
             <div style='float:left;'>Selected group:</div>
             <div id='GC_groupList' class='groupSwitchDiv'>GC_groupList</div>
-            <input type='button' class='groupSwitch' value='On' onclick=''>
-            <input type='button' class='groupSwitch' value='Off' onclick=''>
+            <input type='button' class='groupSwitch' value='On' onclick='groupOn()'>
+            <input type='button' class='groupSwitch' value='Off' onclick='groupOff()'>
             <input type='button' class='groupButton' value='Change group setting' onclick=''>
             <p></p>
             <input type='button' class='groupButton' value='Reset emergency off' onclick='groupSet("resetEmergencyOff");'>
