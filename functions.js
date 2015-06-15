@@ -74,6 +74,7 @@
                                   'outputMeasurementCurrent',
                                   'outputMeasurementSenseVoltage',
                                   'outputMeasurementTerminalVoltage',
+                                  'outputSupervisionMaxTerminalVoltage',
                                   'outputGroup',
                                   'outputSwitch');
 
@@ -111,6 +112,10 @@
       channelList += numberFormat(channelsData[i].data.outputMeasurementTerminalVoltage);
       channelList += " ";
       channelList += channelsData[i].data.outputMeasurementTerminalVoltageUnit;
+      channelList += "</td><td>";
+      channelList += numberFormat(channelsData[i].data.outputSupervisionMaxTerminalVoltage);
+      channelList += " ";
+      channelList += channelsData[i].data.outputSupervisionMaxTerminalVoltageUnit;
       channelList += "</td><td><select onchange='setData(\"outputGroup." + channelsData[i].name + "\", \"i\", value);'>";
       for (var j = 1; j < 64; j++) {
         if (channelsData[i].data.outputGroup == j)
@@ -136,7 +141,7 @@
 
   function printChannelList(channelList) {
     //        var header = "<table cellspacing='0' cellpadding='4px'><tr align='center' bgcolor='#ccffff'><td width='50px'>Name</td><td width='80px'>Voltage</td><td width='80px'>Current</td><td width='120px'>V Rise Rate</td><td width='90px'>Measured<br>Sense V</td><td width='90px'>Measured<br>Current</td><td width='90px'>Measured<br>Terminal V</td><td width='60px'>Switch</td></tr>";
-    var header = "<table cellspacing='0' cellpadding='4px'><tr align='center' bgcolor='#ccffff'><td width='50px'>Name</td><td width='80px'>Voltage</td><td width='80px'>Current</td><td width='90px'>Measured<br>Sense V</td><td width='90px'>Measured<br>Current</td><td width='90px'>Measured<br>Terminal V</td><td width='60px'>Group</td><td width='60px'>Switch</td></tr>";
+    var header = "<table cellspacing='0' cellpadding='4px'><tr align='center' bgcolor='#ccffff'><td width='50px'>Name</td><td width='80px'>Voltage</td><td width='80px'>Current</td><td width='90px'>Measured<br>Sense V</td><td width='90px'>Measured<br>Current</td><td width='90px'>Measured<br>Terminal V</td><td width='90px'>Maximum<br>Terminal V</td><td width='60px'>Group</td><td width='60px'>Switch</td></tr>";
     var footer = "</table>";
 
     var channelListTable = document.getElementById("channelList");
@@ -197,7 +202,7 @@
 
     var channelController = document.getElementById("channelController");
     channelController.style.position = "absolute";
-    channelController.style.left = "690px";
+    channelController.style.left = "785px";
     channelController.style.top = "262px";
     channelController.style.zIndex = 10;
     channelController.style.display = hidden;

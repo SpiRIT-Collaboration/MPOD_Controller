@@ -30,6 +30,7 @@ if (isset($_GET['get'])) {
                            'outputMeasurementCurrent',
                            'outputMeasurementSenseVoltage',
                            'outputMeasurementTerminalVoltage',
+                           'outputSupervisionMaxTerminalVoltage',
                            'outputGroup',
                            'outputSwitch');
       
