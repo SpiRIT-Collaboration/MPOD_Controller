@@ -15,7 +15,7 @@
     </head>
     <body>
         <h1>MPOD HV&LV Power Supply System Controller</h1>
-        <div class='plain'>Create IP Address:</div>
+        <div class='plain'>Crate IP Address:</div>
         <div class='plain'><input type='text' class='ipAddress' id='ipAddress' value='0.0.0.0' /></div>
         <div class='plain'><input type='button' value='Change' onclick='changeIP()' /></div>
         <div class='clear'></div>
