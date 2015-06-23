@@ -10,8 +10,9 @@
     <head>
         <meta charset='utf-8' />
         <title>MPOD HV&LV Power Supply System Controller</title>
-        <script src='./functions.js'></script>
+        
         <link rel='stylesheet' href='./style.css'>
+        <script src='./functions.js'></script>
     </head>
     <body>
         <h1>MPOD HV&LV Power Supply System Controller</h1>
@@ -26,6 +27,15 @@
         <p><b>Make sure if the settings are properly changed before you turn on!</b></p>
         <hr>
         <div id='channelList'>Turn On the Crate to See the Channel List</div>
+
+        <!-- Range Selector -->
+        <div id='rangeSelector' class='groupController' style='position:absolute; left:805px; top:90px; width:220px; height:80px;'>
+            <div class='title'>Safe Current Range</div>
+            <div class='clear'></div>
+            <div style='width:85px;float:left;text-align:right;'>Minimum:</div><div style='float:left;'><input type='text' id='currentMin' size='10' value='1.2' /> A</div>
+            <div class='clear'></div>
+            <div style='width:85px;float:left;text-align:right;'>Maximum:</div><div style='float:left;'><input type='text' id='currentMax' size='10' value='1.5' /> A</div>
+        </div>
 
         <!-- Group Controller -->
         <div id='groupController' class='groupController'>

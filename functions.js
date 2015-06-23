@@ -84,16 +84,18 @@
 
     var channelList = "";
     for (var i = 0; i < numChannels; i++) {
+      var isOn = (channelsData[i].data.outputSwitch == "on");
+      var currentMin = document.getElementById('currentMin').value;
+      var currentMax = document.getElementById('currentMax').value;
+
       channelList += "<tr align='center'" + (i%2 == 0 ? "" : " bgcolor='#ccffff'") + "><td>";
+      channelList += "<input type='checkbox' name='" + channelsData[i].name + "' >";
+      channelList += "</td><td>";
       channelList += "<channel onclick='getData(\"" + channelsData[i].name + "\", initializeChannelController);'>" + capitalize(channelsData[i].name) + "</channel>";
       channelList += "</td><td>";
       channelList += numberFormat(channelsData[i].data.outputVoltage);
       channelList += " ";
       channelList += channelsData[i].data.outputVoltageUnit;
-      channelList += "</td><td>";
-      channelList += numberFormat(channelsData[i].data.outputCurrent);
-      channelList += " ";
-      channelList += channelsData[i].data.outputCurrentUnit;
       /*
          channelList += "</td><td>";
          channelList += channelsData[i].data.outputVoltageRiseRate
@@ -104,8 +106,20 @@
       channelList += numberFormat(channelsData[i].data.outputMeasurementSenseVoltage);
       channelList += " ";
       channelList += channelsData[i].data.outputMeasurementSenseVoltageUnit;
-      channelList += "</td><td>";
-      channelList += numberFormat(channelsData[i].data.outputMeasurementCurrent);
+
+      var style = "color:black";
+      var current = numberFormat(channelsData[i].data.outputMeasurementCurrent);
+      if (isOn) {
+        if (current < currentMin)
+          style = "color:black";
+        else if (current > currentMin && current < currentMax)
+          style = "color:green";
+        else
+          style = "color:red; font-weight:bold";
+      }
+
+      channelList += "</td><td style='" + style + "'>";
+      channelList += current;
       channelList += " ";
       channelList += channelsData[i].data.outputMeasurementCurrentUnit;
       channelList += "</td><td>";
@@ -124,7 +138,7 @@
           channelList += "<option value='" + j + "'>" + j + "</option>";
       }
       channelList += "</select></td><td>";
-      channelList += "<input type='button' value='" + capitalize(channelsData[i].data.outputSwitch) + "' onclick='setData(\"outputSwitch." + channelsData[i].name + "\", \"i\", " + (channelsData[i].data.outputSwitch == "on" ? "0" : "1") + ");'>";
+      channelList += "<input type='button' class='btn btn-" + (isOn ? "success" : "danger") + " btn-xs' value='" + capitalize(channelsData[i].data.outputSwitch) + "' onclick='setData(\"outputSwitch." + channelsData[i].name + "\", \"i\", " + (isOn ? "0" : "1") + ");'>";
       /*            if (channelsData[i].data.outputSwitch == "on") {
                     channelList += "<input type='button' value='On' onclick='setData(\"outputSwitch." + channelsData[i].name + "\", \"i\", \"1\");'>";
                     channelList += "<input type='button' value='Off' disabled>";
@@ -141,7 +155,7 @@
 
   function printChannelList(channelList) {
     //        var header = "<table cellspacing='0' cellpadding='4px'><tr align='center' bgcolor='#ccffff'><td width='50px'>Name</td><td width='80px'>Voltage</td><td width='80px'>Current</td><td width='120px'>V Rise Rate</td><td width='90px'>Measured<br>Sense V</td><td width='90px'>Measured<br>Current</td><td width='90px'>Measured<br>Terminal V</td><td width='60px'>Switch</td></tr>";
-    var header = "<table cellspacing='0' cellpadding='4px'><tr align='center' bgcolor='#ccffff'><td width='50px'>Name</td><td width='80px'>Voltage</td><td width='80px'>Current</td><td width='90px'>Measured<br>Sense V</td><td width='90px'>Measured<br>Current</td><td width='90px'>Measured<br>Terminal V</td><td width='90px'>Maximum<br>Terminal V</td><td width='60px'>Group</td><td width='60px'>Switch</td></tr>";
+    var header = "<table cellspacing='0' cellpadding='4px'><tr align='center' bgcolor='#ccffff'><td width='20px'><input type='checkbox'></td><td width='50px'>Name</td><td width='80px'>Voltage</td><td width='90px'>Measured<br>Sense V</td><td width='90px'>Measured<br>Current</td><td width='90px'>Measured<br>Terminal V</td><td width='90px'>Maximum<br>Terminal V</td><td width='60px'>Group</td><td width='60px'>Switch</td></tr>";
     var footer = "</table>";
 
     var channelListTable = document.getElementById("channelList");
@@ -202,7 +216,7 @@
 
     var channelController = document.getElementById("channelController");
     channelController.style.position = "absolute";
-    channelController.style.left = "785px";
+    channelController.style.left = "805px";
     channelController.style.top = "262px";
     channelController.style.zIndex = 10;
     channelController.style.display = hidden;
