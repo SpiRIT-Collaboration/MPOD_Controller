@@ -13,6 +13,8 @@
         
         <link rel='stylesheet' href='./style.css'>
         <script src='./functions.js'></script>
+
+        <script src="jquery-2.1.4.min.js"></script>
     </head>
     <body>
         <h1>MPOD HV&LV Power Supply System Controller</h1>

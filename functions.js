@@ -5,9 +5,34 @@
 //---------------------------------
 
 {
-    // Initialization Part ---------------------------------------------------
+  var mapping;
+  var UAOrder = new Array(48);
+
+  // Initialization Part ---------------------------------------------------
   function init() {
     readSetting("IPAddress", printIPAddress);
+
+    mapping = (function() {
+                  var json = null;
+                  $.ajax({
+                    'async': false,
+                    'global': false,
+                    'url': "mapping.json",
+                    'dataType': "json",
+                    'success': function (data) {
+                     json = data;
+                  }
+                });
+                return json;
+              })();
+
+    var uOrder = 0;
+    for (var ua in mapping) {
+      var order = parseInt(ua.substr(1));
+      order = parseInt(order/100)*8 + parseInt(order)%100;
+      UAOrder[order] = uOrder++;
+    }
+
     printPowerStatus("Off");
     getData("powerStatus", printPowerStatus);
     setInterval(function() {getData("powerStatus", printPowerStatus);}, 5001);
@@ -82,33 +107,35 @@
     var numChannels = data.numChannels;
     var channelsData = data.channels;
 
+    //create map here.
+
     var channelList = "";
     for (var i = 0; i < numChannels; i++) {
-      var isOn = (channelsData[i].data.outputSwitch == "on");
+      var isOn = (channelsData[UAOrder[i]].data.outputSwitch == "on");
       var currentMin = document.getElementById('currentMin').value;
       var currentMax = document.getElementById('currentMax').value;
 
       channelList += "<tr align='center'" + (i%2 == 0 ? "" : " bgcolor='#ccffff'") + "><td>";
-      channelList += "<input type='checkbox' name='" + channelsData[i].name + "' >";
+      channelList += "<input type='checkbox' name='" + channelsData[UAOrder[i]].name + "' >";
       channelList += "</td><td>";
-      channelList += "<channel onclick='getData(\"" + channelsData[i].name + "\", initializeChannelController);'>" + capitalize(channelsData[i].name) + "</channel>";
+      channelList += "<channel onclick='getData(\"" + channelsData[UAOrder[i]].name + "\", initializeChannelController);'>" + mapping[capitalize(channelsData[UAOrder[i]].name)] + " (" + capitalize(channelsData[UAOrder[i]].name) + ")</channel>";
       channelList += "</td><td>";
-      channelList += numberFormat(channelsData[i].data.outputVoltage);
+      channelList += numberFormat(channelsData[UAOrder[i]].data.outputVoltage);
       channelList += " ";
-      channelList += channelsData[i].data.outputVoltageUnit;
+      channelList += channelsData[UAOrder[i]].data.outputVoltageUnit;
       /*
          channelList += "</td><td>";
-         channelList += channelsData[i].data.outputVoltageRiseRate
+         channelList += channelsData[UAOrder[i]].data.outputVoltageRiseRate
          channelList += " ";
-         channelList += channelsData[i].data.outputVoltageRiseRateUnit;
+         channelList += channelsData[UAOrder[i]].data.outputVoltageRiseRateUnit;
        */
       channelList += "</td><td>";
-      channelList += numberFormat(channelsData[i].data.outputMeasurementSenseVoltage);
+      channelList += numberFormat(channelsData[UAOrder[i]].data.outputMeasurementSenseVoltage);
       channelList += " ";
-      channelList += channelsData[i].data.outputMeasurementSenseVoltageUnit;
+      channelList += channelsData[UAOrder[i]].data.outputMeasurementSenseVoltageUnit;
 
       var style = "color:black";
-      var current = numberFormat(channelsData[i].data.outputMeasurementCurrent);
+      var current = numberFormat(channelsData[UAOrder[i]].data.outputMeasurementCurrent);
       if (isOn) {
         if (current < currentMin)
           style = "color:black";
@@ -121,30 +148,30 @@
       channelList += "</td><td style='" + style + "'>";
       channelList += current;
       channelList += " ";
-      channelList += channelsData[i].data.outputMeasurementCurrentUnit;
+      channelList += channelsData[UAOrder[i]].data.outputMeasurementCurrentUnit;
       channelList += "</td><td>";
-      channelList += numberFormat(channelsData[i].data.outputMeasurementTerminalVoltage);
+      channelList += numberFormat(channelsData[UAOrder[i]].data.outputMeasurementTerminalVoltage);
       channelList += " ";
-      channelList += channelsData[i].data.outputMeasurementTerminalVoltageUnit;
+      channelList += channelsData[UAOrder[i]].data.outputMeasurementTerminalVoltageUnit;
       channelList += "</td><td>";
-      channelList += numberFormat(channelsData[i].data.outputSupervisionMaxTerminalVoltage);
+      channelList += numberFormat(channelsData[UAOrder[i]].data.outputSupervisionMaxTerminalVoltage);
       channelList += " ";
-      channelList += channelsData[i].data.outputSupervisionMaxTerminalVoltageUnit;
-      channelList += "</td><td><select onchange='setData(\"outputGroup." + channelsData[i].name + "\", \"i\", value);'>";
+      channelList += channelsData[UAOrder[i]].data.outputSupervisionMaxTerminalVoltageUnit;
+      channelList += "</td><td><select onchange='setData(\"outputGroup." + channelsData[UAOrder[i]].name + "\", \"i\", value);'>";
       for (var j = 1; j < 64; j++) {
-        if (channelsData[i].data.outputGroup == j)
+        if (channelsData[UAOrder[i]].data.outputGroup == j)
           channelList += "<option value='" + j + "' selected>" + j + "</option>";
         else
           channelList += "<option value='" + j + "'>" + j + "</option>";
       }
       channelList += "</select></td><td>";
-      channelList += "<input type='button' class='btn btn-" + (isOn ? "success" : "danger") + " btn-xs' value='" + capitalize(channelsData[i].data.outputSwitch) + "' onclick='setData(\"outputSwitch." + channelsData[i].name + "\", \"i\", " + (isOn ? "0" : "1") + ");'>";
-      /*            if (channelsData[i].data.outputSwitch == "on") {
-                    channelList += "<input type='button' value='On' onclick='setData(\"outputSwitch." + channelsData[i].name + "\", \"i\", \"1\");'>";
+      channelList += "<input type='button' class='btn btn-" + (isOn ? "success" : "danger") + " btn-xs' value='" + capitalize(channelsData[UAOrder[i]].data.outputSwitch) + "' onclick='setData(\"outputSwitch." + channelsData[UAOrder[i]].name + "\", \"i\", " + (isOn ? "0" : "1") + ");'>";
+      /*            if (channelsData[UAOrder[i]].data.outputSwitch == "on") {
+                    channelList += "<input type='button' value='On' onclick='setData(\"outputSwitch." + channelsData[UAOrder[i]].name + "\", \"i\", \"1\");'>";
                     channelList += "<input type='button' value='Off' disabled>";
                     } else {
                     channelList += "<input type='button' value='On' disabled>";
-                    channelList += "<input type='button' value='Off' onclick='setData(\"outputSwitch." + channelsData[i].name + "\", \"i\", \"0\");'>";
+                    channelList += "<input type='button' value='Off' onclick='setData(\"outputSwitch." + channelsData[UAOrder[i]].name + "\", \"i\", \"0\");'>";
                     }
        */
       channelList += "</td></tr>";
@@ -155,7 +182,7 @@
 
   function printChannelList(channelList) {
     //        var header = "<table cellspacing='0' cellpadding='4px'><tr align='center' bgcolor='#ccffff'><td width='50px'>Name</td><td width='80px'>Voltage</td><td width='80px'>Current</td><td width='120px'>V Rise Rate</td><td width='90px'>Measured<br>Sense V</td><td width='90px'>Measured<br>Current</td><td width='90px'>Measured<br>Terminal V</td><td width='60px'>Switch</td></tr>";
-    var header = "<table cellspacing='0' cellpadding='4px'><tr align='center' bgcolor='#ccffff'><td width='20px'><input type='checkbox'></td><td width='50px'>Name</td><td width='80px'>Voltage</td><td width='90px'>Measured<br>Sense V</td><td width='90px'>Measured<br>Current</td><td width='90px'>Measured<br>Terminal V</td><td width='90px'>Maximum<br>Terminal V</td><td width='60px'>Group</td><td width='60px'>Switch</td></tr>";
+    var header = "<table cellspacing='0' cellpadding='4px'><tr align='center' bgcolor='#ccffff'><td width='20px'><input type='checkbox'></td><td width='120px'>Name</td><td width='80px'>Voltage</td><td width='90px'>Measured<br>Sense V</td><td width='90px'>Measured<br>Current</td><td width='90px'>Measured<br>Terminal V</td><td width='90px'>Maximum<br>Terminal V</td><td width='60px'>Group</td><td width='60px'>Switch</td></tr>";
     var footer = "</table>";
 
     var channelListTable = document.getElementById("channelList");
@@ -212,12 +239,12 @@
     clearTimeout(timerForChannelController);
 
     var title = document.getElementById("title");
-    title.innerHTML = "<b>" + capitalize(channel) + "</b> Output Configuration";
+    title.innerHTML = "<b>" + mapping[capitalize(channel)] + "(" + capitalize(channel) + ")</b> Output Configuration";
 
     var channelController = document.getElementById("channelController");
-    channelController.style.position = "absolute";
+    channelController.style.position = "fixed";
     channelController.style.left = "805px";
-    channelController.style.top = "262px";
+    channelController.style.top = "100px";
     channelController.style.zIndex = 10;
     channelController.style.display = hidden;
 
