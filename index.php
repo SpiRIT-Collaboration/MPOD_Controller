@@ -39,12 +39,17 @@ else
         <div id='channelList'>Turn On the Crate to See the Channel List</div>
 
         <!-- Range Selector -->
-        <div id='rangeSelector' class='groupController' style='position:absolute; left:805px; top:90px; width:220px; height:80px;'>
+        <div id='rangeSelector' class='groupController' style='position:absolute; left:546px; top:140px; width:220px; height:80px;'>
             <div class='title'>Safe Current Range</div>
             <div class='clear'></div>
             <div style='width:85px;float:left;text-align:right;'>Minimum:</div><div style='float:left;'><input type='text' id='currentMin' size='10' value='1.2' /> A</div>
             <div class='clear'></div>
             <div style='width:85px;float:left;text-align:right;'>Maximum:</div><div style='float:left;'><input type='text' id='currentMax' size='10' value='1.5' /> A</div>
+        </div>
+
+        <!-- Overcurrent alert -->
+        <div id='ocalert' class='ocalert'>
+            Overcurrent<br>Alarm!
         </div>
 
         <!-- Group Controller -->

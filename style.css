@@ -184,9 +184,9 @@ a:hover {
 }
 
 .groupController {
-    position:absolute;
+    position:fixed;
     left:805px;
-    top:266px;
+    top:50px;
     width:286px;
     height:220px;
     background-color:#ccffff;
@@ -206,6 +206,20 @@ a:hover {
 
 .groupSwitch {
     width:50px;
+}
+
+.ocalert {
+  position:fixed;
+  top:100px;
+  left:1130px;
+  text-align:center;
+  font-weight:bold;
+  font-size:40pt;
+  color:white;
+  background:red;
+  border:1px solid;
+  padding:8px;
+  border-color:black;
 }
 
 .btn {

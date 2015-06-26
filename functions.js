@@ -144,10 +144,16 @@
       if (isOn) {
         if (current < currentMin)
           style = "color:black";
-        else if (current > currentMin && current < currentMax)
+        else if (current > currentMin && current < currentMax) {
           style = "color:green";
-        else
+
+          document.getElementById('ocalert').style.display = "none";
+        }
+        else {
           style = "color:red; font-weight:bold";
+
+          document.getElementById('ocalert').style.display = "";
+        }
       }
 
       channelList += "</td><td style='" + style + "'>";
