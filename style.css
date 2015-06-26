@@ -7,6 +7,16 @@ channel:hover {
     cursor:pointer;
 }
 
+a {
+  color:#0000ff;
+  font-weight:bold;
+  text-decoration:none;
+}
+
+a:hover {
+  cursor:pointer;
+}
+
 #channelController {
     background-color:#ccffff;
     padding:10px;

@@ -1,3 +1,10 @@
+<?php
+if (isset($_GET['order']))
+    $order = $_GET['order'];
+else
+    $order = 0;
+?>
+
 <!DOCTYPE html>
 
 <!--
@@ -28,6 +35,7 @@
         <p>It takes a few seconds for the settings to be applied.<br>Don't change properties too fast.</p>
         <p><b>Make sure if the settings are properly changed before you turn on!</b></p>
         <hr>
+        <input type='hidden' id='order' value='<?php echo $order; ?>'>
         <div id='channelList'>Turn On the Crate to See the Channel List</div>
 
         <!-- Range Selector -->

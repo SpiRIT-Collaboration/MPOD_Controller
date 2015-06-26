@@ -111,7 +111,8 @@
 
     var channelList = "";
     for (var i = 0; i < numChannels; i++) {
-      var index = parseInt(UAOrder[i]);
+      var orderCriterion = document.getElementById('order').value;
+      var index = (orderCriterion == 0 ? parseInt(UAOrder[i]) : i);
       var isOn = (channelsData[index].data.outputSwitch == "on");
       var currentMin = document.getElementById('currentMin').value;
       var currentMax = document.getElementById('currentMax').value;
@@ -119,7 +120,10 @@
       channelList += "<tr align='center'" + (i%2 == 0 ? "" : " bgcolor='#ccffff'") + "><td>";
       channelList += "<input type='checkbox' name='" + channelsData[index].name + "' >";
       channelList += "</td><td align='left'>";
-      channelList += "<channel onclick='getData(\"" + channelsData[index].name + "\", initializeChannelController);'>" + mapping[capitalize(channelsData[index].name)] + " (" + capitalize(channelsData[index].name) + ")</channel>";
+      if (orderCriterion == 0)
+        channelList += "<channel onclick='getData(\"" + channelsData[index].name + "\", initializeChannelController);'>" + mapping[capitalize(channelsData[index].name)] + " (" + capitalize(channelsData[index].name) + ")</channel>";
+      else
+        channelList += "<channel onclick='getData(\"" + channelsData[index].name + "\", initializeChannelController);'>" + capitalize(channelsData[index].name) + " (" + mapping[capitalize(channelsData[index].name)] + ")</channel>";
       channelList += "</td><td>";
       channelList += numberFormat(channelsData[index].data.outputVoltage);
       channelList += " ";
@@ -182,8 +186,9 @@
   }
 
   function printChannelList(channelList) {
+    var orderCriterion = document.getElementById('order').value;
     //        var header = "<table cellspacing='0' cellpadding='4px'><tr align='center' bgcolor='#ccffff'><td width='50px'>Name</td><td width='80px'>Voltage</td><td width='80px'>Current</td><td width='120px'>V Rise Rate</td><td width='90px'>Measured<br>Sense V</td><td width='90px'>Measured<br>Current</td><td width='90px'>Measured<br>Terminal V</td><td width='60px'>Switch</td></tr>";
-    var header = "<table cellspacing='0' cellpadding='4px'><tr align='center' bgcolor='#ccffff'><td width='20px'><input type='checkbox'></td><td width='130px'>Name</td><td width='80px'>Voltage</td><td width='90px'>Measured<br>Sense V</td><td width='90px'>Measured<br>Current</td><td width='90px'>Measured<br>Terminal V</td><td width='90px'>Maximum<br>Terminal V</td><td width='60px'>Group</td><td width='60px'>Switch</td></tr>";
+    var header = "<table cellspacing='0' cellpadding='4px'><tr align='center' bgcolor='#ccffff'><td width='20px'><input type='checkbox'></td><td width='130px'>Name " + (orderCriterion == 0 ? "(<a href='?order=1'>UA</a>)" : "(<a href='?order=0'>U</a>)") + "</td><td width='80px'>Voltage</td><td width='90px'>Measured<br>Sense V</td><td width='90px'>Measured<br>Current</td><td width='90px'>Measured<br>Terminal V</td><td width='90px'>Maximum<br>Terminal V</td><td width='60px'>Group</td><td width='60px'>Switch</td></tr>";
     var footer = "</table>";
 
     var channelListTable = document.getElementById("channelList");
