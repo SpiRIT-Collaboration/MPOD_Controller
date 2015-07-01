@@ -1,9 +1,12 @@
 <?php
-//---------------------------------
-// Author: Genie Jhang
-// e-mail: geniejhang@majimak.com
-//   Date: 2013. 07. 17
-//---------------------------------
+//--------------------------------------
+//       Author: Genie Jhang
+//       e-mail: geniejhang@majimak.com
+//         Date: 2013. 07. 17
+// Last Updated: 2015. 07. 01
+//
+//      Version: 2.0
+//--------------------------------------
 
 $ip = exec('php setting.php IPAddress');
 
