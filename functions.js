@@ -36,6 +36,8 @@
     printPowerStatus("Off");
     getData("powerStatus", printPowerStatus);
     setInterval(function() {getData("powerStatus", printPowerStatus);}, 5001);
+
+    document.getElementById('ocalert').style.display = "none";
   }
 
   var timerForChannels;
@@ -109,6 +111,7 @@
 
     //create map here.
 
+    var ocFlag = 0;
     var channelList = "";
     for (var i = 0; i < numChannels; i++) {
       var orderCriterion = document.getElementById('order').value;
@@ -144,15 +147,11 @@
       if (isOn) {
         if (current < currentMin)
           style = "color:black";
-        else if (current > currentMin && current < currentMax) {
+        else if (current > currentMin && current < currentMax)
           style = "color:green";
-
-          document.getElementById('ocalert').style.display = "none";
-        }
         else {
           style = "color:red; font-weight:bold";
-
-          document.getElementById('ocalert').style.display = "";
+          ocFlag = ocFlag|1;
         }
       }
 
@@ -187,6 +186,11 @@
        */
       channelList += "</td></tr>";
     }
+
+    if (ocFlag)
+      document.getElementById('ocalert').style.display = "";
+    else
+      document.getElementById('ocalert').style.display = "none";
 
     printChannelList(channelList);
   }
