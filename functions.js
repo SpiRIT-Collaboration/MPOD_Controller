@@ -336,7 +336,7 @@
     var channelName = document.getElementById("ch").value;
 
     setData("outputVoltage." + channelName, "F", document.getElementById("NomSV").value);
-    setData("outputCurrentLimit." + channelName, "F", document.getElementById("NomCL").value);
+    setData("outputCurrent." + channelName, "F", document.getElementById("NomCL").value);
     setData("outputVoltageRiseRate." + channelName, "F", document.getElementById("NomRU").value);
     setData("outputVoltageFallRate." + channelName, "F", document.getElementById("NomRD").value);
     setData("outputNoRampAtSwitchOff." + channelName, "i", (document.getElementById("NomNRSO").checked == true ? 1 : 0)); // modified
