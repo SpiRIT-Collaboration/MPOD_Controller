@@ -1,4 +1,1 @@
-{
-  "IPAddress":"10.32.8.81",
-  "SelectedGroup":"2"
-}
+{"IPAddress":"10.32.8.81","ActiveModules":["ma0","ma1"],"ActiveChannels":["U0","U1","U2","U3","U4","U5","U6","U7","U8","U9","U10","U11","U12","U13","U14","U15","U100","U101","U102","U103","U104","U105","U106","U107"]}

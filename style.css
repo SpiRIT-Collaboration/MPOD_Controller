@@ -2,9 +2,9 @@
        Author: Genie Jhang
        e-mail: geniejhang@majimak.com
          Date: 2013. 07. 17
- Last Updated: 2015. 07. 01
+ Last Updated: 2016. 03. 14
 
-      Version: 2.0
+      Version: 2.1hv
 */
 
 channel {
@@ -41,7 +41,7 @@ a:hover {
 }
 
 #nominal {
-    height:220px;
+    height:100px;
     padding:5px;
     border-width:1px;
     border-style:solid;
@@ -197,7 +197,7 @@ a:hover {
     left:805px;
     top:50px;
     width:286px;
-    height:220px;
+    height:180px;
     background-color:#ccffff;
     padding:10px;
     border-width:1px;
@@ -210,17 +210,33 @@ a:hover {
 
 .groupSwitchDiv {
     float:left;
-    width:55px;
+    width:145px;
 }
 
 .groupSwitch {
-    width:50px;
+    width:140px;
+}
+
+.lcalert {
+  position:fixed;
+  top:100px;
+/*  left:1130px; */
+  left:30px;
+  text-align:center;
+  font-weight:bold;
+  font-size:40pt;
+  color:white;
+  background:blue;
+  border:1px solid;
+  padding:8px;
+  border-color:black;
 }
 
 .ocalert {
   position:fixed;
   top:100px;
-  left:1130px;
+/*  left:1130px; */
+  left:30px;
   text-align:center;
   font-weight:bold;
   font-size:40pt;

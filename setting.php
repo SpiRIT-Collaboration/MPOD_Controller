@@ -1,8 +1,11 @@
 <?php
 //---------------------------------
-// Author: Genie Jhang
-// e-mail: geniejhang@majimak.com
-//   Date: 2014. 11. 6
+//       Author: Genie Jhang
+//       e-mail: geniejhang@majimak.com
+//         Date: 2014. 11. 06
+// Last Updated: 2016. 03. 14
+//
+//      Version: 2.1hv
 //---------------------------------
 
 $filename = 'settings.json';
@@ -24,13 +27,31 @@ if (isset($_GET['write'])) {
   $exist = array_key_exists($writeItem, $settings);
   if ($exist)
     $settings[$writeItem] = $value;
-  
-  $settingsFile = fopen('settings.json', 'w+') or die("Unable to open file!");
+
+  $settingsFile = fopen($filename, 'w+') or die("Unable to open file!");
   fwrite($settingsFile, json_encode($settings));
   fclose($settingsFile);
 }
 
-// For use as exec
-if ($argv[1] != '')
-  echo $settings[$argv[1]];
+function readSetting($item) {
+  $filename = 'settings.json';
+  $settingsText = file_get_contents($filename);
+  $settings = json_decode($settingsText, true);
+
+  return $settings[$item];
+}
+
+function writeSetting($item, $value) {
+  $filename = 'settings.json';
+  $settingsText = file_get_contents($filename);
+  $settings = json_decode($settingsText, true);
+
+  $exist = array_key_exists($writeItem, $settings);
+  if ($exist)
+    $settings[$writeItem] = $value;
+
+  $settingsFile = fopen($filename, 'w+') or die("Unable to open file!");
+  fwrite($settingsFile, json_encode($settings));
+  fclose($settingsFile);
+}
 ?>

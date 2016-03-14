@@ -11,23 +11,23 @@ else
        Author: Genie Jhang
        e-mail: geniejhang@majimak.com
          Date: 2013. 07. 17
- Last Updated: 2015. 07. 01
+ Last Updated: 2016. 03. 14
 
-      Version: 2.0
+      Version: 2.1hv
 -->
 
 <html>
     <head>
         <meta charset='utf-8' />
-        <title>MPOD HV&LV Power Supply System Controller</title>
-        
+        <title>MPOD HV Power Supply System Controller</title>
+
         <link rel='stylesheet' href='./style.css'>
         <script src='./functions.js'></script>
 
         <script src="jquery-2.1.4.min.js"></script>
     </head>
     <body>
-        <h1>MPOD HV&LV Power Supply System Controller</h1>
+        <h1>MPOD HV Power Supply System Controller</h1>
         <div class='plain'>Crate IP Address:</div>
         <div class='plain'><input type='text' class='ipAddress' id='ipAddress' value='0.0.0.0' /></div>
         <div class='plain'><input type='button' value='Change' onclick='changeIP()' /></div>
@@ -45,25 +45,25 @@ else
         <div id='rangeSelector' class='groupController' style='position:absolute; left:546px; top:140px; width:220px; height:80px;'>
             <div class='title'>Safe Current Range</div>
             <div class='clear'></div>
-            <div style='width:85px;float:left;text-align:right;'>Minimum:</div><div style='float:left;'><input type='text' id='currentMin' size='10' value='1.2' /> A</div>
+            <div style='width:85px;float:left;text-align:right;'>Minimum:</div><div style='float:left;'><input type='text' id='currentMin' size='10' value='1.2' /> mA</div>
             <div class='clear'></div>
-            <div style='width:85px;float:left;text-align:right;'>Maximum:</div><div style='float:left;'><input type='text' id='currentMax' size='10' value='1.5' /> A</div>
+            <div style='width:85px;float:left;text-align:right;'>Maximum:</div><div style='float:left;'><input type='text' id='currentMax' size='10' value='1.5' /> mA</div>
         </div>
 
         <!-- Overcurrent alert -->
+        <div id='lcalert' class='lcalert'>
+            Low current<br>Alarm!
+        </div>
         <div id='ocalert' class='ocalert'>
-            Overcurrent<br>Alarm!
+            Over current<br>Alarm!
         </div>
 
         <!-- Group Controller -->
         <div id='groupController' class='groupController'>
             <div class='title'>Group Controller</div>
             <div class='clear'></div>
-            <div style='float:left;'>Selected group:</div>
-            <div id='GC_groupList' class='groupSwitchDiv'>GC_groupList</div>
             <input type='button' class='groupSwitch' value='On' onclick='groupOn()'>
             <input type='button' class='groupSwitch' value='Off' onclick='groupOff()'>
-            <input type='button' class='groupButton' value='Change group setting' onclick=''>
             <p></p>
             <input type='button' class='groupButton' value='Reset emergency off' onclick='groupSet("resetEmergencyOff");'>
             <input type='button' class='groupButton' value='Set emergency off' onclick='groupSet("setEmergencyOff");'>
@@ -86,7 +86,7 @@ else
                     <div class='measLeftLabel'>Terminal Voltage [V]</div>
                     <div class='value' id='MeasTV'>0.000</div>
                     <div class='clear'></div>
-                    <div class='measLeftLabel'>Current [A]</div>
+                    <div class='measLeftLabel'>Current [mA]</div>
                     <div class='value' id='MeasI'>0.000</div>
                 </div>
                 <div class='frameSpace'>&nbsp;</div>
@@ -114,7 +114,7 @@ else
                     <div class='input'><input type='text' class='input' id='NomSV' value='0.000'></div>
                     <div class='info' id='NomSVMax'>0.000</div>
                     <div class='clear'></div>
-                    <div class='nomLeftLabel'>Current Limit [A]</div>
+                    <div class='nomLeftLabel'>Current Limit [mA]</div>
                     <div class='input'><input type='text' class='input' id='NomCL' value='0.000'></div>
                     <div class='info' id='NomCLMax'>0.000</div>
                 </div>
@@ -128,27 +128,6 @@ else
                     <div class='clear'></div>
                     <div class='nomRightLabel'>Ramp Down [V/s]</div>
                     <div class='input'><input type='text' class='input' id='NomRD' value='100'></div>
-                </div>
-                <div class='clear'></div>
-                <div class='nomBottomFrame'>
-                    <div class='nomBottomLabel'>No Ramp at Switch Off</div>
-                    <div class='input'><input type='checkbox' id='NomNRSO'></div>
-                    <div class='clear'></div>
-                    <div class='nomBottomLabel'>Fast Regulation (Cable length &#60; 1m)</div>
-                    <div class='input'><input type='radio' name='NomR' value='0'></div>
-                    <div class='clear'></div>
-                    <div class='nomBottomLabel'>Moderate Regulation (Cable length &#62; 1m)</div>
-                    <div class='input'><input type='radio' name='NomR' value='1'></div>
-                    <div class='clear'></div>
-                    <div class='nomBottomLabel'>Slow Regulation (Cable length &#62; 50m)</div>
-                    <div class='input'><input type='radio' name='NomR' value='2'></div>
-                    <div class='clear'></div>
-                    <div class='nomBottomLabel'>Internal Sensing</div>
-                    <div class='input'><input type='checkbox' id='IntSen'></div>
-                    <!-- not used
-                    <div class='nomBottomLabel'>reserved</div>
-                    <div class='input'><input type='checkbox' id='reserved'></div>
-                    -->
                 </div>
             </div>
             <div class='frameBreak'></div>
@@ -168,9 +147,9 @@ else
                 <div class='value2'>
                     <select class='value2' id='SupMinSVFail'>
                         <option value='0'>ignore the failure</option>
-                        <option value='1'>switch off this channel</option>
-                        <option value='2'>switch off all channels with the same group number</option>
-                        <option value='3'>switch off the complete crate</option>
+                        <option value='1'>switch off this channel by ramp down the voltage</option>
+                        <option value='2'>switch off this channel by a emergencyOff</option>
+                        <option value='3'>switch off the whole board of the HV module by emergencyOff</option>
                     </select>
                 </div>
                 <div class='clear'></div>
@@ -181,9 +160,9 @@ else
                 <div class='value2'>
                     <select class='value2' id='SupMaxSVFail'>
                         <option value='0'>ignore the failure</option>
-                        <option value='1'>switch off this channel</option>
-                        <option value='2'>switch off all channels with the same group number</option>
-                        <option value='3'>switch off the complete crate</option>
+                        <option value='1'>switch off this channel by ramp down the voltage</option>
+                        <option value='2'>switch off this channel by a emergencyOff</option>
+                        <option value='3'>switch off the whole board of the HV module by emergencyOff</option>
                     </select>
                 </div>
                 <div class='clear'></div>
@@ -193,22 +172,23 @@ else
                 <div class='frameSpace2'>&nbsp;</div>
                 <div class='value2'>
                     <select class='value2' id='SupMaxTVFail'>
-                        <option value='1'>switch off this channel</option>
-                        <option value='2'>switch off all channels with the same group number</option>
-                        <option value='3'>switch off the complete crate</option>
+                        <option value='0'>ignore the failure</option>
+                        <option value='1'>switch off this channel by ramp down the voltage</option>
+                        <option value='2'>switch off this channel by a emergencyOff</option>
+                        <option value='3'>switch off the whole board of the HV module by emergencyOff</option>
                     </select>
                 </div>
                 <div class='clear'></div>
-                <div class='supLabel'>max. Current [A]</div>
+                <div class='supLabel'>max. Current [mA]</div>
                 <div class='input'><input type='text' class='input' id='SupMaxI' value='0.000'></div>
                 <div class='info' id='SupMaxIMax'>0.000</div>
                 <div class='frameSpace2'>&nbsp;</div>
                 <div class='value2'>
                     <select class='value2' id='SupMaxIFail'>
                         <option value='0'>ignore the failure</option>
-                        <option value='1'>switch off this channel</option>
-                        <option value='2'>switch off all channels with the same group number</option>
-                        <option value='3'>switch off the complete crate</option>
+                        <option value='1'>switch off this channel by ramp down the voltage</option>
+                        <option value='2'>switch off this channel by a emergencyOff</option>
+                        <option value='3'>switch off the whole board of the HV module by emergencyOff</option>
                     </select>
                 </div>
             </div>

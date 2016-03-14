@@ -1,9 +1,9 @@
 ----------------------------------------------------------------------------------------------------
--- $HeadURL: http://svn.wiener-d.com/src/enet/trunk/mibs/WIENER-CRATE-MIB.txt $                     
--- $LastChangedDate: 2012-10-04 10:04:09 +0200 (Do, 04. Okt 2012) $                                 
--- $LastChangedRevision: 1959 $                                                                     
--- $LastChangedBy: koester (roemer)$                                                                
--- Copyright © 2005-2007 W-IE-NE-R Plein & Baus GmbH, Burscheid, Germany                            
+-- $HeadURL: http://svn.wiener-d.com/src/enet/trunk/mibs/WIENER-CRATE-MIB.txt $
+-- $LastChangedDate: 2015-10-24 10:33:57 +0200 (Sa, 24 Okt 2015) $
+-- $LastChangedRevision: 3181 $
+-- $LastChangedBy: koester (roemer)$
+-- Copyright ï¿½ 2005-2007 W-IE-NE-R Plein & Baus GmbH, Burscheid, Germany
 ----------------------------------------------------------------------------------------------------
 WIENER-CRATE-MIB DEFINITIONS ::= BEGIN
 
@@ -14,10 +14,10 @@ IMPORTS
 
     TEXTUAL-CONVENTION, DisplayString
     FROM SNMPv2-TC
-    
+
 --    Float
 --      FROM NET-SNMP-TC
---    Float 
+--    Float
 --      FROM UCD-SNMP-MIB
     ;
 
@@ -41,6 +41,9 @@ wiener MODULE-IDENTITY
     "Introduction of the communication.can branch.
     "
 
+    REVISION "200810090000Z"    -- October 9, 2008
+    DESCRIPTION
+    "New Stuff."
 
     REVISION "200805060000Z"    -- May 6, 2008
     DESCRIPTION
@@ -77,7 +80,7 @@ wiener MODULE-IDENTITY
     REVISION "200502010000Z"
     DESCRIPTION
     "This revision introduces new OIDs for group managment:
-      groupTable      
+      groupTable
     "
 
     REVISION "200406280000Z"
@@ -124,7 +127,7 @@ Float ::= TEXTUAL-CONVENTION
 crate   OBJECT-IDENTITY
         STATUS  current
         DESCRIPTION
-            "SNMP control for electronic crates. A crate is a complete electronic system and 
+            "SNMP control for electronic crates. A crate is a complete electronic system and
             consists of the mechanical rack, a power supply, a fan tray and a backplane.
             All this things are necessary to provide an adequate housing for electronic
             modules (e.g. VME CPU's)"
@@ -148,49 +151,49 @@ system  OBJECT-IDENTITY
     ::= { crate 1 }
 
 
-input   OBJECT-IDENTITY 
+input   OBJECT-IDENTITY
     STATUS  current
     DESCRIPTION
         "All objects which are associated with the power input of the crate"
     ::= { crate 2 }
 
-output  OBJECT-IDENTITY 
+output  OBJECT-IDENTITY
     STATUS  current
     DESCRIPTION
         "All objects which are associated with the power output of the crate"
     ::= { crate 3 }
 
-sensor  OBJECT-IDENTITY 
+sensor  OBJECT-IDENTITY
     STATUS  current
     DESCRIPTION
         "All objects which are associated with temperature sensors in the crate"
     ::= { crate 4 }
 
-communication OBJECT-IDENTITY 
+communication OBJECT-IDENTITY
     STATUS  current
     DESCRIPTION
         "All objects which affect the remote control of the crate"
     ::= { crate 5 }
 
-powersupply OBJECT-IDENTITY 
+powersupply OBJECT-IDENTITY
     STATUS  current
     DESCRIPTION
         "All objects which are specific for the power supply of the crate"
     ::= { crate 6 }
 
-fantray     OBJECT-IDENTITY 
+fantray     OBJECT-IDENTITY
     STATUS  current
     DESCRIPTION
         "All objects which are specific for the fan tray of the crate"
     ::= { crate 7 }
 
-rack        OBJECT-IDENTITY 
+rack        OBJECT-IDENTITY
     STATUS  current
     DESCRIPTION
         "All objects which are specific for the crate (BIN) of the crate"
     ::= { crate 8 }
 
-signal OBJECT-IDENTITY 
+signal OBJECT-IDENTITY
     STATUS  current
     DESCRIPTION
         "All objects which are associated with analog/digtal input/output in the crate"
@@ -202,9 +205,11 @@ signal OBJECT-IDENTITY
 -------------------------------------------------------------------------------
 System ::= SEQUENCE {
     sysMainSwitch                 INTEGER,
-    sysHardwareReset              INTEGER,
     sysStatus                     BITS,
     sysVmeSysReset                INTEGER,
+    sysHardwareReset              INTEGER,
+	sysFactoryDefaults            INTEGER,
+
     sysConfigDoMeasurementCurrent BITS,
     sysOperatingTime              Integer32,
 
@@ -213,7 +218,7 @@ System ::= SEQUENCE {
     sysDebugMemory32              Integer32,
     sysDebug                      OCTET STRING,
     sysDebugDisplay               OCTET STRING,
-    sysConfig                     OCTET STRING
+    sysDebugBoot                  OCTET STRING
 }
 
 sysMainSwitch OBJECT-TYPE
@@ -258,7 +263,7 @@ sysStatus OBJECT-TYPE
                 sensorFailure (6),          temperature of the external sensors too high
                 vmeSysfail(7),              VME SYSFAIL signal is active
                 plugAndPlayIncompatible (8) wrong power supply and rack connected
-                busReset (9)                The sytem bus (e.g. VME or CPCI) reset signal is active.        
+                busReset (9)                The sytem bus (e.g. VME or CPCI) reset signal is active.
                 supplyDerating (10)         The (first) system power supply has the DEG signal active.
                 supplyFailure (11)          The (first) system power supply has the FAL signal active.
                 supplyDerating2 (12)        The second system power supply has the DEG signal active.
@@ -267,7 +272,7 @@ sysStatus OBJECT-TYPE
     ::= { system 2 }
 
 
---        ERROR_BIN_CHECKSUM(?), 
+--        ERROR_BIN_CHECKSUM(?),
 
 
 
@@ -291,6 +296,16 @@ sysHardwareReset OBJECT-TYPE
             "Triggered a Reset via Watchdog or ResetLine."
     ::= { system 4 }
 
+sysFactoryDefaults OBJECT-TYPE
+    SYNTAX  INTEGER { off (0), on (1) }
+    MAX-ACCESS  read-write
+    STATUS  current
+    DESCRIPTION
+            "A set operation performs a complete factory reset of ALL data
+			 stored in the controller (e.g. community names, passwords, ...).
+			"
+    ::= { system 5 }
+
 
 sysConfigDoMeasurementCurrent OBJECT-TYPE
     SYNTAX  BITS {
@@ -301,7 +316,7 @@ sysConfigDoMeasurementCurrent OBJECT-TYPE
         ch4 (4) ,
         ch5 (5) ,
         ch6 (6) ,
-        ch7 (7) 
+        ch7 (7)
     }
     MAX-ACCESS  read-write
     STATUS  current
@@ -352,7 +367,7 @@ sysDebug OBJECT-TYPE
              via USB (without SLIP/SNMP).
             "
     ::= { system 1027 }
-    
+
 sysDebugDisplay OBJECT-TYPE
     SYNTAX  OCTET STRING
     MAX-ACCESS  read-write
@@ -360,14 +375,15 @@ sysDebugDisplay OBJECT-TYPE
     DESCRIPTION
             "Debug communication with the MPOD display."
     ::= { system 1028 }
-    
-sysConfig OBJECT-TYPE
-    SYNTAX  OCTET STRING (SIZE (1..25))
+
+sysDebugBoot OBJECT-TYPE
+    SYNTAX  OCTET STRING
     MAX-ACCESS  read-write
     STATUS  current
     DESCRIPTION
-            "Debug config memory access."
+            "Debug communication with the simple debug interface / bootloader."
     ::= { system 1029 }
+
 -------------------------------------------------------------------------------
 -- input
 -------------------------------------------------------------------------------
@@ -385,7 +401,7 @@ sysConfig OBJECT-TYPE
 --        outputNumber                Integer32,
 --        outputTable                 OutputTable,
 --        groupsNumber                Integer32,
---        groupsTable                 GroupsTable
+--        groupsTable                 GroupsTable,
 --        moduleNumber                Integer32,
 --        moduleTable                 moduleTable
 --        ??TotalPower
@@ -433,9 +449,9 @@ moduleNumber OBJECT-TYPE
     DESCRIPTION
             "The number of HV/LV modules of the crate."
     ::= { output 5 }
-    
+
 moduleTable OBJECT-TYPE
-    SYNTAX  SEQUENCE OF moduleEntry
+    SYNTAX  SEQUENCE OF ModuleEntry
     MAX-ACCESS  not-accessible
     STATUS  current
     DESCRIPTION
@@ -489,21 +505,22 @@ OutputEntry ::= SEQUENCE {
         outputConfigOffsetTerminalVoltage   Float,
         outputConfigGainCurrent             Float,
         outputConfigOffsetCurrent           Float,
-        
+        outputUserConfig                    Integer32,
+
         outputCurrentRiseRate               Float,
         outputCurrentFallRate               Float,
         outputTripTimeMaxCurrent            INTEGER,
 
         outputHardwareLimitVoltage          Float,
         outputHardwareLimitCurrent          Float,
-    
+
         outputRegulationMode                INTEGER,
         outputConfigMaxTemperature          Integer32
       }
 
 
 outputIndex OBJECT-TYPE
-    SYNTAX INTEGER { 
+    SYNTAX INTEGER {
                      u0(1),u1(2),u2(3),u3(4),u4(5),u5(6),u6(7),u7(8),u8(9),u9(10),
                      u10(11),u11(12),u12(13),u13(14),u14(15),u15(16),u16(17),u17(18),u18(19),u19(20),
                      u20(21),u21(22),u22(23),u23(24),u24(25),u25(26),u26(27),u27(28),u28(29),u29(30),
@@ -715,8 +732,8 @@ outputIndex OBJECT-TYPE
     ::= { outputEntry 1 }
 
 outputName OBJECT-TYPE
-    SYNTAX  DisplayString (SIZE (1..10))
-    MAX-ACCESS  read-write
+    SYNTAX  DisplayString (SIZE (1..4))
+    MAX-ACCESS  read-only
     STATUS  current
     DESCRIPTION
             "A textual string containing a short name of the
@@ -735,9 +752,9 @@ outputGroup OBJECT-TYPE
 			the group number:
 
             HLgggggg
-            g: Group number (1...63) 
+            g: Group number (1...63)
             L: Mask bit: 1: high voltage channels only, no low voltage channels
-            H: Mask bit: 1: low voltage channels only, no high voltage channels 
+            H: Mask bit: 1: low voltage channels only, no high voltage channels
 
             Special groups:    0: all (LV+HV) channels
                             0x40: all, but no LV channels
@@ -762,7 +779,12 @@ outputStatus OBJECT-TYPE
         outputRampUp (11),
         outputRampDown (12),
         outputEnableKill(13),
-        outputEmergencyOff (14)
+        outputEmergencyOff (14),
+        outputAdjusting (15),
+        outputConstantVoltage (16),
+        -- reserved,
+        outputCurrentBoundsExceeded (18),
+        outputFailureCurrentLimit (19)
     }
     MAX-ACCESS  read-only
     STATUS  current
@@ -781,9 +803,13 @@ outputStatus OBJECT-TYPE
                 outputCurrentLimited (10),              Current limiting is active (constant current mode)
                 outputRampUp (11),                      Output voltage is increasing (e.g. after switch on)
                 outputRampDown (12),                    Output voltage is decreasing (e.g. after switch off)
-                outputEnableKill (13),                  EnableKill is aktive
-                outputEmergencyOff (14),                EmergencyOff event is aktive
-                
+                outputEnableKill (13),                  EnableKill is active
+                outputEmergencyOff (14),                EmergencyOff event is active
+                outputAdjusting (15),                   Fine adjustment is working
+                outputConstantVoltage (16),             Voltage control (constant voltage mode)
+                outputVoltageBoundsExceeded (17),       output Voltage out of bounds
+                outputCurrentBoundsExceeded (18),       output Current out of bounds
+                outputFailureCurrentLimit (19)          Hardware current limit (EHS) / trip (EDS, EBS) was exceeded
             "
 
     ::= { outputEntry 4 }
@@ -828,32 +854,32 @@ outputMeasurementTemperature OBJECT-TYPE
 
 
 outputSwitch OBJECT-TYPE
-    SYNTAX  INTEGER { off (0), on (1), resetEmergencyOff (2),  setEmergencyOff (3), clearEvents (10) }
+    SYNTAX  INTEGER { off (0), on (1), resetEmergencyOff (2),  setEmergencyOff (3), clearEvents (10), setVoltageRippleMeasurementOff(20), setVoltageMeasurementOn(21), setRippleMeasurementOn(22), setVoltageRippleMeasurementOn(23) }
     MAX-ACCESS  read-write
     STATUS  current
     DESCRIPTION
             "Read: An enumerated value which shows the current state of
              the output channel.
-             
+
              Write: Change the state of the channel.
              If the channel is On, and the write value is Off, then the channel
              will switch Off.
              If the channel is Off, and the write value is On, and if no other
              signals (mainInhibit, outputInhibit, outputEmergencyOff or outputFailureMaxCurrent)
              are active, then the channel will switch on.
-             
-             If the write value is resetEmergencyOff, then the channel will 
+
+             If the write value is resetEmergencyOff, then the channel will
              leave the state EmergencyOff. A write of clearEvents is necessary
              before the voltage can ramp up again.
-             If the write value is setEmergencyOff, then the channel will have 
-             the state EmergencyOff, which means that the High Voltage will 
+             If the write value is setEmergencyOff, then the channel will have
+             the state EmergencyOff, which means that the High Voltage will
              switch off without a ramp and reset of the outputVoltage to null volt.
-             
-             If the write value is clearEvents, then all failure messages 
+
+             If the write value is clearEvents, then all failure messages
              of the outputStatus will be reset (all channel events, all module events
              and the state emergencyOff)."
     ::= { outputEntry 9 }
-    
+
 outputVoltage OBJECT-TYPE
     SYNTAX  Float
     UNITS   "V"
@@ -920,7 +946,7 @@ outputSupervisionBehavior OBJECT-TYPE
                 3           switch off the complete crate.
 	           iseg HV devices
                 0           ignore the failure
-                1           switch off this channel by ramp down the voltage 
+                1           switch off this channel by ramp down the voltage
                 2           switch off this channel by a emergencyOff
                 3           switch off the whole board of the HV module by emergencyOff.
              The position of the bit fields in the integer value are:
@@ -1021,7 +1047,7 @@ outputSupervisionMaxPower OBJECT-TYPE
     MAX-ACCESS  read-write
     STATUS  current
     DESCRIPTION
-            "If the measured power (measured current * measured terminal voltage) 
+            "If the measured power (measured current * measured terminal voltage)
              is above this value, the power supply performs the function defined
               by SupervisionAction."
     ::= { outputEntry 24 }
@@ -1049,7 +1075,7 @@ outputCurrentFallRate OBJECT-TYPE
              switch off or if the Current has been changed).
             "
     ::= { outputEntry 26 }
-        
+
 outputTripTimeMaxCurrent OBJECT-TYPE
     SYNTAX  INTEGER (0..4000)
     UNITS   "ms"
@@ -1058,7 +1084,7 @@ outputTripTimeMaxCurrent OBJECT-TYPE
     DESCRIPTION
             "Current trip time out [ms].
              The outputTripTimeMaxCurrent defines a span for the time out function.
-             The activity is depending from the bit field outputFailureMaxCurrent 
+             The activity is depending from the bit field outputFailureMaxCurrent
              of the outputSupervisionBehavior."
     ::= { outputEntry 27 }
 
@@ -1073,7 +1099,7 @@ outputHardwareLimitVoltage OBJECT-TYPE
              channels of a module).
             "
     ::= { outputEntry 28 }
-        
+
 outputHardwareLimitCurrent OBJECT-TYPE
     SYNTAX  Float
     UNITS   "A"
@@ -1093,8 +1119,8 @@ outputConfigGainSenseVoltage OBJECT-TYPE
     STATUS  current
     DESCRIPTION
             "The gain value of the sense voltage"
-    ::= { outputEntry 30 }        
-    
+    ::= { outputEntry 30 }
+
 outputConfigOffsetSenseVoltage OBJECT-TYPE
     SYNTAX  Float
     UNITS   "V"
@@ -1102,8 +1128,8 @@ outputConfigOffsetSenseVoltage OBJECT-TYPE
     STATUS  current
     DESCRIPTION
             "The offset value of the sense voltage"
-    ::= { outputEntry 31 }       
-    
+    ::= { outputEntry 31 }
+
 outputConfigGainTerminalVoltage OBJECT-TYPE
     SYNTAX  Float
     UNITS   ""
@@ -1111,8 +1137,8 @@ outputConfigGainTerminalVoltage OBJECT-TYPE
     STATUS  current
     DESCRIPTION
             "The gain value of the sense voltage"
-    ::= { outputEntry 32 }        
-    
+    ::= { outputEntry 32 }
+
 outputConfigOffsetTerminalVoltage OBJECT-TYPE
     SYNTAX  Float
     UNITS   "V"
@@ -1120,8 +1146,8 @@ outputConfigOffsetTerminalVoltage OBJECT-TYPE
     STATUS  current
     DESCRIPTION
             "The offset value of the sense voltage"
-    ::= { outputEntry 33 }       
-    
+    ::= { outputEntry 33 }
+
 outputConfigGainCurrent OBJECT-TYPE
     SYNTAX  Float
     UNITS   ""
@@ -1129,8 +1155,8 @@ outputConfigGainCurrent OBJECT-TYPE
     STATUS  current
     DESCRIPTION
             "The gain value of the sense voltage"
-    ::= { outputEntry 34 }        
-    
+    ::= { outputEntry 34 }
+
 outputConfigOffsetCurrent OBJECT-TYPE
     SYNTAX  Float
     UNITS   "V"
@@ -1138,10 +1164,10 @@ outputConfigOffsetCurrent OBJECT-TYPE
     STATUS  current
     DESCRIPTION
             "The offset value of the sense voltage"
-    ::= { outputEntry 35 }           
+    ::= { outputEntry 35 }
 
 outputUserConfig OBJECT-TYPE
-    SYNTAX  Integer32 (0..15)
+    SYNTAX  Integer32 (0..127)
     MAX-ACCESS  read-write
     STATUS  current
     DESCRIPTION
@@ -1156,37 +1182,48 @@ outputUserConfig OBJECT-TYPE
                            cable inductance:
 			               0: fast:     short cables, up to 1 meter.
 			               1: moderate: cables from 1 to 30 meter.
-			               2: slow:     cables longer than 30 meter.
-			               3: slow (identical to 2, should not be used)
+                           2: fast:     identical to 0 (should not be used)
+                           3: slow:     cables longer than 30 meter.
              Bit 3:    Internal sense line connection to the output (MPOD only):
                            0: The sense input at the sense connector is used
                               for regulation.
                            1: The output voltage is used for regulation.
                               Any signals at the sense connector are ignored.
-             Bit 4:    External Inhibit input.
+             Bit 4:    Enable External Inhibit input.
                            0: The external inhibit input is ignored.
                            1: The external inhibit input must be connected to
                               a voltage source to allow switch on.
+             Bit 5:    Disable Global Inhibit inputs.
+                           0: The global inhibit/interlock inputs of the system is active.
+                           1: The global inhibit/interlock inputs of the system is ignored.
+             Bit 6:    Automatic Power On.
+                           0: After switching the main system switch ON, the output is not
+						      switched on automatically. A separate outputSwitch command is
+							  required.
+                           1: After switching the main system switch ON, the output is
+						      switched on automatically. If 'Disable Global Inhibit' (bit 5)
+							  is set, the output will be switched on regardless of the global
+							  inhibit/interlock signals.
              Community required for write access: guru.
             "
-    ::= { outputEntry 37 }                
-                             
+    ::= { outputEntry 37 }
+
 outputRegulationMode OBJECT-TYPE
     SYNTAX  INTEGER { fast (0), moderate (1), slow (2) }
     MAX-ACCESS  read-write
     STATUS  current
     DESCRIPTION
             "Definition of the regulation mode.
+             Deprecated, use outputUserConfig for this function in the future!
              It is possible to set different regulation modes, dependent on the
 			 cable inductance.
 			 fast:     short cables, up to 1 meter.
 			 moderate: cables from 1 to 30 meter.
 			 slow:     cables longer than 30 meter.
-             outputUserConfig in the future.
              Community required for write access: guru.
             "
-    ::= { outputEntry 38 }                
-                  
+    ::= { outputEntry 38 }
+
 outputConfigMaxTemperature OBJECT-TYPE
     SYNTAX  Integer32
 --    SYNTAX  Integer32 (-128..127)
@@ -1196,7 +1233,7 @@ outputConfigMaxTemperature OBJECT-TYPE
     DESCRIPTION
             "The maximum possible value of outputSupervisionMaxTemperature."
     ::= { outputEntry 39 }
-         
+
 -------------------------------------------------------------------------------
 -- output->groups
 -------------------------------------------------------------------------------
@@ -1280,33 +1317,33 @@ groupsIndex OBJECT-TYPE
     ::= { groupsEntry 1 }
 
 groupsSwitch OBJECT-TYPE
-    SYNTAX  INTEGER { undefined (-1), off (0), on (1), resetEmergencyOff (2),  setEmergencyOff(3), disableKill (4), enableKill (5), clearEvents(10) }
+    SYNTAX  INTEGER { undefined (-1), off (0), on (1), resetEmergencyOff (2),  setEmergencyOff(3), disableKill (4), enableKill (5), disableAdjust(6), enableAdjust(7), clearEvents(10) }
     MAX-ACCESS  read-write
     STATUS  current
     DESCRIPTION
             "Read: This function is not defined with groups of output channels.
-            
+
              Write: Switch the state of all channels of a group.
              If any channel is On, and the write value is Off, then all channels
              will switch off.
              If any channel is Off, and the write value is On, and if no other
              signals (mainInhibit, outputInhibit, outputEmergencyOff or  outputFailureMaxCurrent)
              are active, then all channels will switch on.
-             
-             If the write value is resetEmergencyOff, then all channels will 
+
+             If the write value is resetEmergencyOff, then all channels will
              leave the state EmergencyOff. A write of clearEvents is necessary
              before the voltage can ramp up again.
-             If the write value is setEmergencyOff, then all channels will have 
-             the state EmergencyOff, which means that the High Voltage will 
+             If the write value is setEmergencyOff, then all channels will have
+             the state EmergencyOff, which means that the High Voltage will
              switch off without a ramp and reset of the outputVoltage to null volt.
-             
-             If the write value is disableKILL, then all channels will switch 
+
+             If the write value is disableKILL, then all channels will switch
              to disableKill (outputStatus outputDisableKill).
-             If the write value is enableKILL, then all channels will switch 
+             If the write value is enableKILL, then all channels will switch
              to enableKill (outputStatus outputEnableKill).
-             
-             If the write value is clearEvents, then all failure messages 
-             of the outputStatus will be cleared (all channel events, 
+
+             If the write value is clearEvents, then all failure messages
+             of the outputStatus will be cleared (all channel events,
              all module events and the state outputEmergencyOff will be reset).
 
 			 For a detailed description of the different group numbers available
@@ -1329,7 +1366,7 @@ groupsSwitch OBJECT-TYPE
 -------------------------------------------------------------------------------
 -- device related parsing of the HV data items
 --
--- advantage: 
+-- advantage:
 --    Parsing this branch the user directly recognises the structure
 --    of HV/LV devices and the hierarchie of data items,
 --    module and channel functions and their interaction.
@@ -1345,7 +1382,7 @@ groupsSwitch OBJECT-TYPE
 -------------------------------------------------------------------------------
 
 moduleEntry OBJECT-TYPE
-    SYNTAX  HvdevEntry
+    SYNTAX  ModuleEntry
     MAX-ACCESS  not-accessible
     STATUS  current
     DESCRIPTION
@@ -1353,24 +1390,27 @@ moduleEntry OBJECT-TYPE
     INDEX   { moduleIndex }
     ::= { moduleTable 1 }
 
-moduleEntry ::= SEQUENCE {
-    moduleIndex                        INTEGER,
-    moduleName                         DisplayString,
-    
-    moduleDescription                  OCTET STRING,
-    moduleSerialNumber                 INTEGER32,
-    mduleFirmwareRelease               FLOAT,
-    moduleFirmwareName                 OCTET STRING,
-
-    moduleChannelNumber                INTEGER32,
-    moduleSupply24                     FLOAT,
-    moduleSupply5                      FLOAT,
-    moduleAuxiliaryNumber              INTEGER32,
-    moduleAuxiliaryTable               ModuleAuxiliaryTable
+ModuleEntry ::= SEQUENCE {
+    moduleIndex                            INTEGER,
+    moduleDescription                      OCTET STRING,
+--  moduleChannelNumber                    INTEGER32,
+--  moduleAuxiliaryNumber                  INTEGER32,
+    moduleAuxiliaryMeasurementVoltage      Float,
+    moduleHardwareLimitVoltage             Float,
+    moduleHardwareLimitCurrent             Float,
+    moduleRampSpeedVoltage                 Float,
+    moduleRampSpeedCurrent                 Float,
+    moduleStatus                           BITS,
+    moduleEventStatus                      BITS,
+    moduleEventChannelStatus               INTEGER,
+    moduleDoClear                          INTEGER,
+--  moduleAuxiliaryTemperatureSensorNumber INTEGER32,
+    moduleAuxiliaryMeasurementTemperature  Float
 }
 
+
 moduleIndex OBJECT-TYPE
-    SYNTAX INTEGER { 
+    SYNTAX INTEGER {
                     ma0(1),ma1(2),ma2(3),ma3(4),ma4(5),ma5(6),ma6(7),ma7(8),ma8(9),ma9(10)}
     MAX-ACCESS  not-accessible
     STATUS  current
@@ -1381,150 +1421,245 @@ moduleIndex OBJECT-TYPE
     ::= { moduleEntry 1 }
 
 
-moduleName OBJECT-TYPE
-    SYNTAX  DisplayString (SIZE (1..4))
+moduleDescription OBJECT-TYPE
+    SYNTAX  OCTET STRING (SIZE(0..39))
     MAX-ACCESS  read-only
     STATUS  current
     DESCRIPTION
-            "A textual string containing a short name of the
-            HV/LV module."
+            "Vendor, FirmwareName, ChannelNumber, SerialNumber, FirmwareRelease
+            Vendor WIENER or iseg
+            FirmwareName:
+               'E16D0'  EDS 16 channels per PCB, distributor module, range of Vmax from VO max to (VO max - 1kV)
+               'E16D1'  EDS 16 channels per PCB, distributor module
+               'E08C0'  EHS  8 channels per PCB, common GND module
+               'E08F0'  EHS  8 channels per PCB, floating GND module
+               'E08F2'  EHS  8 channels per PCB, floating GND module, 2 current measurement ranges
+               'E08C2'  EHS  8 channels per PCB, common floating GND module, 2 current measurement ranges
+               'E08B0'  EBS  8 bipolars channel per PCB, distributor module
+               'H101C0' HPS  1 channel  HV high power supply
+            ChannelNumber 1 to 64
+            SerialNumber  71xxxx
+            FirmwareRelease  x.xx"
     ::= { moduleEntry 2 }
 
+-------------------------------------------------------------------------------
 
--- vvvv Folgendes wird später zusammengefasst zu  moduleDescription
-moduleSerialNumber OBJECT-TYPE
-    SYNTAX  Integer32 (100000..999999)
-    UNITS   ""
-    MAX-ACCESS  read-only
+moduleAuxiliaryMeasurementVoltage OBJECT-IDENTITY
     STATUS  current
     DESCRIPTION
-            "Serial number of the module."
+        "The measured module auxiliary voltages."
     ::= { moduleEntry 3 }
 
-
-moduleFirmwareRelease OBJECT-TYPE
-    SYNTAX  Float
-    MAX-ACCESS  read-only
-    STATUS  current
-    DESCRIPTION
-            "Firmware release of the module"
-    ::= { moduleEntry 4 }
-
-
-moduleFirmwareName OBJECT-TYPE
-    SYNTAX  OCTET STRING (SIZE(0..6))
-    MAX-ACCESS  read-only
-    STATUS  current
-    DESCRIPTION
-            "Name of the device's firmware:
-             'E16D0'  EDS 16 channels per PCB, distributor module, range of Vmax from VO max to (VO max - 1kV)
-             'E16D1'  EDS 16 channels per PCB, distributor module
-             'E08C0'  EHS  8 channels per PCB, common GND module
-             'E08F0'  EHS  8 channels per PCB, floating GND module
-             'E08F2'  EHS  8 channels per PCB, floating GND module, 2 current measurement ranges
-             'E08C2'  EHS  8 channels per PCB, common floating GND module, 2 current measurement ranges
-             'E08B0'  EBS  8 bipolars channel per PCB, distributor module
-             'H101C0' HPS  1 channel  HV high power supply
-             "
-    ::= { moduleEntry 5 }
-    
--- ^^^^ Oben wird später zusammengefasst zu  moduleDescription
-
--- vvvv Was ist das?
-moduleChannelNumber OBJECT-TYPE
-    SYNTAX  Integer32 (0..255)
-    MAX-ACCESS  read-only
-    STATUS  current
-    DESCRIPTION
-            "Channel number of the module"
-    ::= { moduleEntry 6 }
-
-
--- vvvv Folgendes wird ersetzt
-moduleSupply24 OBJECT-TYPE
-    SYNTAX  Float
-    MAX-ACCESS  read-only
-    STATUS  current
-    DESCRIPTION
-            "Module power supply 24V"
-    ::= { moduleEntry 7 }
-
-
-moduleSupply5 OBJECT-TYPE
-    SYNTAX  Float
-    MAX-ACCESS  read-only
-    STATUS  current
-    DESCRIPTION
-            "Module power supply 5V"
-    ::= { moduleEntry 8 }
-
--- ^^^^ wird ersetzt durch weiter unten
-
- moduleDescription OBJECT-TYPE
-    SYNTAX  OCTET STRING (SIZE(0..26))
-    MAX-ACCESS  read-only
-    STATUS  current
-    DESCRIPTION
-            "vendor FirmwareName, SerialNumber, FirmwareRelease"
-    ::= { moduleEntry 9 }
-
-
--- vvvv Ersatz für moduleSupply:
--------------------------------------------------------------------------------
-moduleAuxiliaryNumber OBJECT-TYPE
-    SYNTAX  Integer32 (0..8)
-    MAX-ACCESS  read-only
-    STATUS  current
-    DESCRIPTION
-            "The number of auxiliary channels of the power module."
-    ::= { moduleEntry 10 }
-
-moduleAuxiliaryTable OBJECT-TYPE
-    SYNTAX  SEQUENCE OF ModuleAuxiliaryEntry
-    MAX-ACCESS  not-accessible
-    STATUS  current
-    DESCRIPTION
-           "A list of ModuleAuxiliary entries."
-    ::= { moduleEntry 11 }
-
------------------------------------------------
-moduleAuxiliaryEntry OBJECT-TYPE
-    SYNTAX  ModuleAuxiliaryEntry
-    MAX-ACCESS  not-accessible
-    STATUS  current
-    DESCRIPTION
-            "A table row"
-    INDEX   { moduleAuxiliaryIndex }
-    ::= { moduleAuxiliaryTable 1 }
-
-ModuleAuxiliaryEntry ::= SEQUENCE {
-        moduleAuxiliaryIndex                    INTEGER,
-        moduleAuxiliaryMeasurementVoltage         Float,
-      }
-
-moduleAuxiliaryIndex OBJECT-TYPE
-    SYNTAX INTEGER { 
-                     u0(1),u1(2),u2(3),u3(4),u4(5),u5(6),u6(7),u7(8)}
-    MAX-ACCESS  not-accessible
-    STATUS  current
-    DESCRIPTION
-            "A unique number for each module auxiliary channel. Its value
-            ranges between 1 and total number of output channels.
-            SMI index starts at 1, so index 1 corresponds to U0."
-    ::= { moduleAuxiliaryEntry 1 }
-
-moduleAuxiliaryMeasurementVoltage OBJECT-TYPE
+moduleAuxiliaryMeasurementVoltage0 OBJECT-TYPE
     SYNTAX  Float
     UNITS   "V"
     MAX-ACCESS  read-only
     STATUS  current
     DESCRIPTION
             "The measured module auxiliary voltage."
-    ::= { moduleAuxiliaryEntry 2 }
+    ::= { moduleAuxiliaryMeasurementVoltage 1 }
+
+moduleAuxiliaryMeasurementVoltage1 OBJECT-TYPE
+    SYNTAX  Float
+    UNITS   "V"
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+            "The measured module auxiliary voltage."
+    ::= { moduleAuxiliaryMeasurementVoltage 2 }
+
+-------------------------------------------------------------------------------
 
 
+moduleHardwareLimitVoltage OBJECT-TYPE
+    SYNTAX  Float
+    UNITS   "%"
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+            "The module hardware voltage limit."
+    ::= { moduleEntry 4 }
 
--- ^^^^ Ende Ersatz
+moduleHardwareLimitCurrent OBJECT-TYPE
+    SYNTAX  Float
+    UNITS   "%"
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+            "The module hardware current limit."
+    ::= { moduleEntry 5 }
+
+moduleRampSpeedVoltage OBJECT-TYPE
+    SYNTAX  Float
+    UNITS   "%"
+    MAX-ACCESS  read-write
+    STATUS  current
+    DESCRIPTION
+            "The module voltage ramp speed
+             (iseg HV modules have the same ramp speed value for all channels).
+            "
+    ::= { moduleEntry 6 }
+
+moduleRampSpeedCurrent OBJECT-TYPE
+    SYNTAX  Float
+    UNITS   "%"
+    MAX-ACCESS  read-write
+    STATUS  current
+    DESCRIPTION
+            "The module current ramp speed
+             (iseg HV modules have the same ramp speed value for all channels).
+            "
+    ::= { moduleEntry 7 }
+
+moduleStatus OBJECT-TYPE
+    SYNTAX  BITS {
+        moduleIsFineAdjustment (0),
+        -- reserved
+        moduleIsLiveInsertion (2),
+        -- reserved
+        moduleNeedService (4),
+        moduleHardwareLimitVoltageIsGood (5),
+        moduleIsInputError (6),
+        -- reserved
+        moduleIsNoSumError (8),
+        moduleIsNoRamp (9),
+        moduleSafetyLoopIsGood (10),
+        moduleIsEventActive (11),
+        moduleIsGood (12),
+        moduleSupplyIsGood (13),
+        moduleTemperatureIsGood (14),
+        moduleIsKillEnable (15)
+    }
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+            "A bit string which shows the current module status.
+             If a bit is set (1), the explanation is satisfied:
+                moduleIsFineAdjustment (0),             Module has reached state fine adjustment.
+                moduleIsLiveInsertion (2),              Module is in state live insertion.
+                moduleNeedService (4),                  Hardware failure detected (consult iseg Spezialelektronik GmbH).
+                moduleIsHardwareLimitVoltageGood (5),   Hardware limit voltage in proper range, using for HV distributor modules with
+                                                        current mirror only.
+                moduleIsInputError (6),                 Input error in connection with a module access.
+                moduleIsNoSumError (8),                 All channels without any failure.
+                moduleIsNoRamp (9),                     All channels stable, no is ramp active.
+                moduleIsSafetyLoopGood (10),            Safety loop is closed.
+                moduleIsEventActive (11),               Any event is active and mask is set.
+                moduleIsGood (12),                      Module state is good.
+                moduleIsSupplyGood (13),                Power supply is good.
+                moduleIsTemperatureGood (14),           Module temperature is good.
+                moduleIsKillEnable (15)                 Module state of kill enable.
+
+            "
+    ::= { moduleEntry 8 }
+
+
+moduleEventStatus OBJECT-TYPE
+SYNTAX  BITS {
+        moduleEventPowerFail (0),
+        -- reserved
+        moduleEventLiveInsertion (2),
+        -- reserved
+        moduleEventService (4),
+        moduleHardwareLimitVoltageNotGood (5),
+        moduleEventInputError (6),
+        -- reserved
+        -- reserved,
+        -- reserved,,
+        moduleEventSafetyLoopNotGood (10),
+        -- reserved,
+        -- reserved,
+        moduleEventSupplyNotGood (13),
+        moduleEventTemperatureNotGood (14)
+        -- reserved,
+    }
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+            "A bit string which shows the current module status.
+             If a bit is set (1), the explanation is satisfied:
+                moduleEventPowerFail (0),               Event power fail generated by the MPOD controller in order to ramp down all HV's (ramp speed=1000V/s)
+                moduleEventLiveInsertion (2),           Event live insertion to prepare a hot plug of a module
+                moduleEventService (4),                 Module event: Hardware failure detected (consult iseg Spezialelektronik GmbH).
+                moduleHardwareLimitVoltageNotGood (5),  Module Event: Hardware voltage limit is not in proper range, using for HV distributor
+                                                        modules with current mirror only.
+                moduleEventInputError (6),              Module event: There was an input error in connection with a module access
+                moduleEventSafetyLoopNotGood (10),      Module event: Safety loop is open.
+                moduleEventSupplyNotGood (13),          Module event: At least one of the supplies is not good.
+                moduleEventTemperatureNotGood (14),     Module event: Temperature was above the permitted threshold
+                                                        (for EDS/EHS temperature above 55 degr.C)
+
+            "
+
+    ::= { moduleEntry 9 }
+
+
+moduleEventChannelStatus OBJECT-TYPE
+    SYNTAX  INTEGER
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+            "Bit field that reserves one bit for every channel.
+              bit 0      HV channel 0
+              bit 1      HV channel 1
+              bit x      HV channel x
+            "
+    ::= { moduleEntry 10 }
+
+
+moduleDoClear OBJECT-TYPE
+    SYNTAX  INTEGER { nothing (0), doClear (1) }
+    MAX-ACCESS  read-write
+    STATUS  current
+    DESCRIPTION
+            "All events of the module will be cleared."
+    ::= { moduleEntry 11 }
+
+
+-------------------------------------------------------------------------------
+
+moduleAuxiliaryMeasurementTemperature OBJECT-IDENTITY
+    STATUS  current
+    DESCRIPTION
+        "The number of auxiliary temperature sensors in the module."
+    ::= { moduleEntry 12 }
+
+moduleAuxiliaryMeasurementTemperature0 OBJECT-TYPE
+    SYNTAX  Float
+    UNITS   "degr.C"
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+            "The measured module temperature of sensor 1."
+    ::= { moduleAuxiliaryMeasurementTemperature 1 }
+
+moduleAuxiliaryMeasurementTemperature1 OBJECT-TYPE
+    SYNTAX  Float
+    UNITS   "degr.C"
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+            "The measured module temperature of sensor 2."
+    ::= { moduleAuxiliaryMeasurementTemperature 2 }
+
+moduleAuxiliaryMeasurementTemperature2 OBJECT-TYPE
+    SYNTAX  Float
+    UNITS   "degr.C"
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+            "The measured module temperature of sensor 3."
+    ::= { moduleAuxiliaryMeasurementTemperature 3 }
+
+moduleAuxiliaryMeasurementTemperature3 OBJECT-TYPE
+    SYNTAX  Float
+    UNITS   "degr.C"
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+            "The measured module temperature of sensor 4."
+    ::= { moduleAuxiliaryMeasurementTemperature 4 }
+
 -------------------------------------------------------------------------------
 -- sensor
 -------------------------------------------------------------------------------
@@ -1590,7 +1725,7 @@ sensorTemperature OBJECT-TYPE
              Unused temperature probes have the special value -128"
     ::= { sensorEntry 2 }
 
-sensorWarningThreshold OBJECT-TYPE 
+sensorWarningThreshold OBJECT-TYPE
 -- CHECK    SYNTAX  INTEGER  { (0..126), DISABLED(127) }
     SYNTAX  Integer32  (0..127)
     UNITS   "deg C"
@@ -1625,7 +1760,7 @@ sensorFailureThreshold OBJECT-TYPE
 --            so it is possible to switch of the fans.
 --            The value 127 has the special meaning: channel disabled."
 --    ::= { sensorEntry 5}
-    
+
     sensorAlarmThreshold OBJECT-TYPE
 -- CHECK    SYNTAX  INTEGER  { (0..126), DISABLED(127) }
     SYNTAX  Integer32  (0..127)
@@ -1637,7 +1772,7 @@ sensorFailureThreshold OBJECT-TYPE
             value, the fans rotate in full speed.
             The value 127 has the special meaning: channel disabled."
     ::= { sensorEntry 6}
-    
+
    sensorName OBJECT-TYPE
     SYNTAX  DisplayString (SIZE (1..7))
     MAX-ACCESS  read-write
@@ -1647,7 +1782,7 @@ sensorFailureThreshold OBJECT-TYPE
             sensor. If the crate is equipped with an alphanumeric
             display, this string is shown to identify a sensor channel."
     ::= { sensorEntry 7 }
-	
+
 	sensorID OBJECT-TYPE
     SYNTAX  OCTET STRING (SIZE (8))
     MAX-ACCESS  read-write
@@ -1655,7 +1790,7 @@ sensorFailureThreshold OBJECT-TYPE
     DESCRIPTION
             "Shows the 1-Wire Id of the corresponding Sensor."
     ::= { sensorEntry 8}
-    
+
    sensorStatus OBJECT-TYPE
     SYNTAX  Integer32
     MAX-ACCESS  read-only
@@ -1679,9 +1814,9 @@ sensorFailureThreshold OBJECT-TYPE
                 Bit 12, 13: Sensor7
                 Bit 14, 15: Sensor8"
     ::= { sensorEntry 9}
-    
-    
-    
+
+
+
 --################
 -------------------------------------------------------------------------------
 -- communication
@@ -1704,14 +1839,14 @@ snmp OBJECT-IDENTITY
         "SNMP configuration."
     ::= { communication 1 }
 
-SnmpCommunityEntry ::= SEQUENCE {
+Snmp ::= SEQUENCE {
     snmpAccessRight            INTEGER,
     snmpCommunityName          OCTET STRING,
     snmpCommunityTable         SnmpCommunityEntry,
     snmpPort                   INTEGER,
-    ipDynamicAddress           IpAddress, 
+    ipDynamicAddress           IpAddress,
     --OCTET STRING,
-    ipStaticAddress            IpAddress, 
+    ipStaticAddress            IpAddress,
     --OCTET STRING,
     macAddress                 OCTET STRING
 }
@@ -1732,6 +1867,14 @@ snmpCommunityEntry OBJECT-TYPE
             "One table row."
     INDEX   { snmpAccessRight }
     ::= { snmpCommunityTable 1 }
+
+
+SnmpCommunityEntry ::= SEQUENCE {
+        snmpAccessRight
+            INTEGER,
+        snmpCommunityName
+            OCTET STRING
+}
 
 snmpAccessRight OBJECT-TYPE
     SYNTAX  INTEGER { public (1), private (2), admin (3), guru (4) }
@@ -1763,8 +1906,20 @@ snmpPort OBJECT-TYPE
     MAX-ACCESS  read-write
     STATUS  current
     DESCRIPTION
-            "The UDP port number of the SNMP protocol"
+            "The UDP port number of the SNMP protocol. A value of
+			 0 disables all future SNMP communication!
+			"
     ::= { snmp 2}
+
+httpPort OBJECT-TYPE
+    SYNTAX  Integer32
+    MAX-ACCESS  read-write
+    STATUS  current
+    DESCRIPTION
+            "The TCP port number of the HTTP (web) protocol. A value
+			 of 0 disables all HTTP access.
+			"
+    ::= { snmp 3}
 
 firmwareUpdate OBJECT-TYPE
     SYNTAX  OCTET STRING (SIZE (0..30))
@@ -1775,7 +1930,7 @@ firmwareUpdate OBJECT-TYPE
     ::= { snmp 10}
 
 ipDynamicAddress OBJECT-TYPE
-    SYNTAX  IpAddress 
+    SYNTAX  IpAddress
 --OCTET STRING (SIZE (4))
     MAX-ACCESS  read-only
     STATUS  current
@@ -1784,7 +1939,7 @@ ipDynamicAddress OBJECT-TYPE
     ::= { snmp 11}
 
 ipStaticAddress OBJECT-TYPE
-    SYNTAX  IpAddress 
+    SYNTAX  IpAddress
 --OCTET STRING (SIZE (4))
     MAX-ACCESS  read-write
     STATUS  current
@@ -1875,7 +2030,7 @@ canTransmitHv OBJECT-TYPE
              will switch the HV modules into a special state.
              CONTROL=0x0001 - enable SNMP CAN access, stop the refresh cycle for the data points of the name space
              CONTROL=0x0002 - disable SNMP CAN access, activate the refresh cycle for the data points of the name space
-             A write access unequal to CANID=0x600 will be transmitted to the HV CAN on the backplane. 
+             A write access unequal to CANID=0x600 will be transmitted to the HV CAN on the backplane.
              Such a message will be transmitted immediately via the CAN interface.
              The OCTET STRING data is formatted according to the CANviaSNMP structure.
             "
@@ -1922,7 +2077,7 @@ Powersupply ::= SEQUENCE {
     --psFirmwareVersion           DisplayString,
     psSerialNumber              DisplayString,
     psOperatingTime             Integer32,
-    
+
     psDirectAccess              OCTET STRING
 }
 
@@ -1961,7 +2116,7 @@ psAuxiliaryNumber OBJECT-TYPE
     ::= { powersupply 4 }
 
 psAuxiliaryTable OBJECT-TYPE
-    SYNTAX  SEQUENCE OF PsAuxiliarytEntry
+    SYNTAX  SEQUENCE OF PsAuxiliaryEntry
     MAX-ACCESS  not-accessible
     STATUS  current
     DESCRIPTION
@@ -1989,7 +2144,7 @@ psAuxiliaryEntry OBJECT-TYPE
     INDEX   { psAuxiliaryIndex }
     ::= { psAuxiliaryTable 1 }
 
-OutputEntry ::= SEQUENCE {
+PsAuxiliaryEntry ::= SEQUENCE {
         psAuxiliaryIndex                    INTEGER,
         psAuxiliaryMeasurementVoltage         Float,
         psAuxiliaryMeasurementCurrent         Float
@@ -1997,7 +2152,7 @@ OutputEntry ::= SEQUENCE {
 
 
 psAuxiliaryIndex OBJECT-TYPE
-    SYNTAX INTEGER { 
+    SYNTAX INTEGER {
                      u0(1),u1(2),u2(3),u3(4),u4(5),u5(6),u6(7),u7(8)}
     MAX-ACCESS  not-accessible
     STATUS  current
@@ -2093,7 +2248,7 @@ fanSwitchOffDelay OBJECT-TYPE
 fanNominalSpeed OBJECT-TYPE
 -- CHECK    SYNTAX  INTEGER { (0) , (1200..3600) }
 -- SYNTAX  Integer32 (0..3600)
-    SYNTAX  Integer32 
+    SYNTAX  Integer32
     UNITS   "RPM"
     MAX-ACCESS  read-write
     STATUS  current
@@ -2158,7 +2313,7 @@ fanSpeed OBJECT-TYPE
 fanMaxSpeed OBJECT-TYPE
 -- CHECK    SYNTAX  INTEGER { (0) , (1200..5000) }
 --  SYNTAX  Integer32 (2900..4000)
-    SYNTAX  INTEGER 
+    SYNTAX  INTEGER
     UNITS   "RPM"
     MAX-ACCESS  read-write
     STATUS  current
@@ -2176,25 +2331,25 @@ fanMinSpeed OBJECT-TYPE
     DESCRIPTION
             "The lowest allowed Rotationspeed of fan."
     ::= { fantray 10 }
-    
+
 fanConfigMaxSpeed OBJECT-TYPE
-    SYNTAX  Integer32 
+    SYNTAX  Integer32
     UNITS   "RPM"
     MAX-ACCESS  read-write
     STATUS  current
     DESCRIPTION
             "Hardwarelimits. Can only set by WIENER."
-    ::= { fantray 11 }        
-        
+    ::= { fantray 11 }
+
 fanConfigMinSpeed OBJECT-TYPE
-    SYNTAX  Integer32 
+    SYNTAX  Integer32
     UNITS   "RPM"
     MAX-ACCESS  read-write
     STATUS  current
     DESCRIPTION
             "Hardwarelimits Can only set by WIENER."
-    ::= { fantray 12 }        
-               
+    ::= { fantray 12 }
+
 -------------------------------------------------------------------------------
 -- rack
 -------------------------------------------------------------------------------
@@ -2240,7 +2395,8 @@ analogInputEntry OBJECT-TYPE
 
 AnalogInputEntry ::= SEQUENCE {
         analogInputIndex            INTEGER,
-        analogMeasurementVoltage          Float
+        analogMeasurementVoltage          Float,
+        analogMeasurementCurrent          Float
     }
 
 analogInputIndex OBJECT-TYPE
@@ -2272,14 +2428,14 @@ analogMeasurementCurrent OBJECT-TYPE
 
 digitalInput OBJECT-TYPE
     SYNTAX  BITS {
-        d0(0) ,
-        d1(1) ,
-        d2(2) ,
-        d3(3) ,
-        d4(4) ,
-        d5(5) ,
-        d6(6) ,
-        d7(7) 
+        d0 (0) ,
+        d1 (1) ,
+        d2 (2) ,
+        d3 (3) ,
+        d4 (4) ,
+        d5 (5) ,
+        d6 (6) ,
+        d7 (7)
     }
     MAX-ACCESS  read-only
     STATUS  current
@@ -2289,21 +2445,19 @@ digitalInput OBJECT-TYPE
 
 digitalOutput OBJECT-TYPE
     SYNTAX  BITS {
-        d0(0) ,
-        d1(1) ,
-        d2(2) ,
-        d3(3) ,
-        d4(4) ,
-        d5(5) ,
-        d6(6) ,
-        d7(7) 
+        d0 (0) ,
+        d1 (1) ,
+        d2 (2) ,
+        d3 (3) ,
+        d4 (4) ,
+        d5 (5) ,
+        d6 (6) ,
+        d7 (7)
     }
-    MAX-ACCESS  read-write
+    MAX-ACCESS  read-only
     STATUS  current
     DESCRIPTION
-             "The value of the digital outputs. Example set the outputs (d0 and d1) by:
-             snmpset .... 192.168.x.x b d0,d1 
-             Attention: only Bits from 0..7 allowed! On the other hand, the outputs will be cleared!"
+            "The value of the digital outputs."
     ::= { signal 6 }
 
 

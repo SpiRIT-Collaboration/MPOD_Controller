@@ -2,9 +2,9 @@
 //       Author: Genie Jhang
 //       e-mail: geniejhang@majimak.com
 //         Date: 2013. 07. 17
-// Last Updated: 2015. 07. 01
+// Last Updated: 2016. 03. 14
 //
-//      Version: 2.0
+//      Version: 2.1hv
 //--------------------------------------
 
 {
@@ -31,8 +31,8 @@
 
     var uOrder = 0;
     for (var ua in mapping) {
-      var order = parseInt(mapping[ua].substr(2));
-      order = parseInt(order/100)*12 + parseInt(order)%100;
+      var order = parseInt(mapping[ua].substring(0, mapping[ua].length - 1));
+      order -= 1;
       UAOrder[order] = uOrder++;
     }
 
@@ -40,6 +40,7 @@
     getData("powerStatus", printPowerStatus);
     setInterval(function() {getData("powerStatus", printPowerStatus);}, 5001);
 
+    document.getElementById('lcalert').style.display = "none";
     document.getElementById('ocalert').style.display = "none";
   }
 
@@ -48,21 +49,19 @@
   var powerStatusForChannels = "Off";
   function initChannels() {
     getData("channels", buildChannelList);
-    readSetting("selectedGroup", printGroupController);
     timerForChannels = setInterval(function() {getData("channels", buildChannelList);}, 5000);
-    timerForGC = setInterval(function() {readSetting("SelectedGroup", printGroupController);}, 5000);
   }
   // -----------------------------------------------------------------------
 
   // Change IP Part --------------------------------------------------------
   function printIPAddress(ipAddress) {
     document.getElementById('ipAddress').value = ipAddress;
-  } 
+  }
 
   function changeIP() {
-    var newIP = document.getElementById('ipAddress').value; 
+    var newIP = document.getElementById('ipAddress').value;
     writeSetting("IPAddress", newIP);
-  } 
+  }
   // -----------------------------------------------------------------------
 
   // Power Switch Part -----------------------------------------------------
@@ -102,10 +101,10 @@
                                   'outputCurrent',
                                   'outputVoltageRiseRate',
                                   'outputMeasurementCurrent',
+                                  'outputSupervisionMaxCurrent',
                                   'outputMeasurementSenseVoltage',
                                   'outputMeasurementTerminalVoltage',
                                   'outputSupervisionMaxTerminalVoltage',
-                                  'outputGroup',
                                   'outputSwitch');
 
     var data = JSON.parse(rawdata);
@@ -114,6 +113,7 @@
 
     //create map here.
 
+    var lcFlag = 0;
     var ocFlag = 0;
     var channelList = "";
     for (var i = 0; i < numChannels; i++) {
@@ -134,22 +134,23 @@
       channelList += numberFormat(channelsData[index].data.outputVoltage);
       channelList += " ";
       channelList += channelsData[index].data.outputVoltageUnit;
-      /*
-         channelList += "</td><td>";
-         channelList += channelsData[index].data.outputVoltageRiseRate
-         channelList += " ";
-         channelList += channelsData[index].data.outputVoltageRiseRateUnit;
-       */
       channelList += "</td><td>";
       channelList += numberFormat(channelsData[index].data.outputMeasurementSenseVoltage);
       channelList += " ";
       channelList += channelsData[index].data.outputMeasurementSenseVoltageUnit;
+      channelList += "</td><td>";
+      channelList += numberFormat(channelsData[index].data.outputVoltageRiseRate);
+      channelList += " ";
+      channelList += channelsData[index].data.outputVoltageRiseRateUnit;
+
 
       var style = "color:black";
-      var current = numberFormat(channelsData[index].data.outputMeasurementCurrent);
+      var current = currentFormat(channelsData[index].data.outputMeasurementCurrent);
       if (isOn) {
-        if (current < currentMin)
-          style = "color:black";
+    	  if (current < currentMin) {
+              style = "color:black";
+              lcFlag = lcFlag|1;
+    	  }
         else if (current > currentMin && current < currentMax)
           style = "color:green";
         else {
@@ -163,33 +164,18 @@
       channelList += " ";
       channelList += channelsData[index].data.outputMeasurementCurrentUnit;
       channelList += "</td><td>";
-      channelList += numberFormat(channelsData[index].data.outputMeasurementTerminalVoltage);
+      channelList += currentFormat(channelsData[index].data.outputSupervisionMaxCurrent);
       channelList += " ";
-      channelList += channelsData[index].data.outputMeasurementTerminalVoltageUnit;
+      channelList += channelsData[index].data.outputSupervisionMaxCurrentUnit;
       channelList += "</td><td>";
-      channelList += numberFormat(channelsData[index].data.outputSupervisionMaxTerminalVoltage);
-      channelList += " ";
-      channelList += channelsData[index].data.outputSupervisionMaxTerminalVoltageUnit;
-      channelList += "</td><td><select onchange='setData(\"outputGroup." + channelsData[index].name + "\", \"i\", value);'>";
-      for (var j = 1; j < 64; j++) {
-        if (channelsData[index].data.outputGroup == j)
-          channelList += "<option value='" + j + "' selected>" + j + "</option>";
-        else
-          channelList += "<option value='" + j + "'>" + j + "</option>";
-      }
-      channelList += "</select></td><td>";
       channelList += "<input type='button' class='btn btn-" + (isOn ? "success" : "danger") + " btn-xs' value='" + capitalize(channelsData[index].data.outputSwitch) + "' onclick='setData(\"outputSwitch." + channelsData[index].name + "\", \"i\", " + (isOn ? "0" : "1") + ");'>";
-      /*            if (channelsData[index].data.outputSwitch == "on") {
-                    channelList += "<input type='button' value='On' onclick='setData(\"outputSwitch." + channelsData[index].name + "\", \"i\", \"1\");'>";
-                    channelList += "<input type='button' value='Off' disabled>";
-                    } else {
-                    channelList += "<input type='button' value='On' disabled>";
-                    channelList += "<input type='button' value='Off' onclick='setData(\"outputSwitch." + channelsData[index].name + "\", \"i\", \"0\");'>";
-                    }
-       */
       channelList += "</td></tr>";
     }
 
+    if (lcFlag)
+      document.getElementById('lcalert').style.display = "";
+    else
+      document.getElementById('lcalert').style.display = "none";
     if (ocFlag)
       document.getElementById('ocalert').style.display = "";
     else
@@ -200,8 +186,7 @@
 
   function printChannelList(channelList) {
     var orderCriterion = document.getElementById('order').value;
-    //        var header = "<table cellspacing='0' cellpadding='4px'><tr align='center' bgcolor='#ccffff'><td width='50px'>Name</td><td width='80px'>Voltage</td><td width='80px'>Current</td><td width='120px'>V Rise Rate</td><td width='90px'>Measured<br>Sense V</td><td width='90px'>Measured<br>Current</td><td width='90px'>Measured<br>Terminal V</td><td width='60px'>Switch</td></tr>";
-    var header = "<table cellspacing='0' cellpadding='4px'><tr align='center' bgcolor='#ccffff'><td width='20px'><input type='checkbox'></td><td width='130px'>Name " + (orderCriterion == 0 ? "(<a href='?order=1'>UA</a>)" : "(<a href='?order=0'>U</a>)") + "</td><td width='80px'>Voltage</td><td width='90px'>Measured<br>Sense V</td><td width='90px'>Measured<br>Current</td><td width='90px'>Measured<br>Terminal V</td><td width='90px'>Maximum<br>Terminal V</td><td width='60px'>Group</td><td width='60px'>Switch</td></tr>";
+    var header = "<table cellspacing='0' cellpadding='4px'><tr align='center' bgcolor='#ccffff'><td width='20px'><input type='checkbox'></td><td width='130px'>Name " + (orderCriterion == 0 ? "(<a href='?order=1'>TPC</a>)" : "(<a href='?order=0'>U</a>)") + "</td><td width='80px'>Voltage</td><td width='90px'>Measured<br>Sense V</td><td width='90px'>Ramp Up<br>Rate</td><td width='90px'>Measured<br>Current</td><td width='90px'>Current<br>Limit</td><td width='60px'>Switch</td></tr>";
     var footer = "</table>";
 
     var channelListTable = document.getElementById("channelList");
@@ -210,28 +195,14 @@
   // -----------------------------------------------------------------------
 
   // Group Controller Part -------------------------------------------------
-  function printGroupController(selectedGroup) {
-    document.getElementById("groupController").style.display = "";
-
-    var groupList = "<select id='selectedGroup' onchange='writeSetting(\"SelectedGroup\", value);'>";
-    for (var iGroup = 0; iGroup < 64; iGroup++) {
-      if (iGroup != 0)
-        groupList += "<option value='" + iGroup + "'" + (selectedGroup == iGroup ? "selected" : "") + ">" + iGroup + "</option>";
-      else
-        groupList += "<option value='" + iGroup + "'" + (selectedGroup == iGroup ? "selected" : "") + ">All</option>";
-    }
-    groupList += "</select>";
-    document.getElementById("GC_groupList").innerHTML = groupList;
-  }
-
   function groupOn() {
-    var selectedGroup = document.getElementById("selectedGroup").value;
+    var selectedGroup = 0x40;
 
     setData("groupsSwitch." + selectedGroup, "i", 1);
   }
 
   function groupOff() {
-    var selectedGroup = document.getElementById("selectedGroup").value;
+    var selectedGroup = 0x40;
 
     setData("groupsSwitch." + selectedGroup, "i", 0);
   }
@@ -262,8 +233,8 @@
 
     var channelController = document.getElementById("channelController");
     channelController.style.position = "fixed";
-    channelController.style.left = "805px";
-    channelController.style.top = "300px";
+    channelController.style.left = "735px";
+    channelController.style.top = "260px";
     channelController.style.zIndex = 10;
     channelController.style.display = hidden;
 
@@ -280,20 +251,17 @@
 
     document.getElementById("MeasSV").innerHTML = numberFormat(channelData.outputMeasurementSenseVoltage);
     document.getElementById("MeasTV").innerHTML = numberFormat(channelData.outputMeasurementTerminalVoltage);
-    document.getElementById("MeasI").innerHTML = numberFormat(channelData.outputMeasurementCurrent);
+    document.getElementById("MeasI").innerHTML = currentFormat(channelData.outputMeasurementCurrent);
     document.getElementById("MeasHT").innerHTML = numberFormat(channelData.outputMeasurementTemperature);
     document.getElementById("MeasPL").innerHTML = numberFormat(channelData.outputMeasurementPowerLoad);
     document.getElementById("MeasPM").innerHTML = numberFormat(channelData.outputMeasurementPowerModule);
 
     document.getElementById("NomSV").value = numberFormat(channelData.outputVoltage);
     document.getElementById("NomSVMax").innerHTML = numberFormat(channelData.outputSupervisionMaxSenseVoltage);
-    document.getElementById("NomCL").value = numberFormat(channelData.outputCurrentLimit);
-    document.getElementById("NomCLMax").innerHTML = numberFormat(channelData.outputSupervisionMaxCurrent);
+    document.getElementById("NomCL").value = currentFormat(channelData.outputCurrentLimit);
+    document.getElementById("NomCLMax").innerHTML = currentFormat(channelData.outputSupervisionMaxCurrent);
     document.getElementById("NomRU").value = numberFormat(channelData.outputVoltageRiseRate);
     document.getElementById("NomRD").value = numberFormat(channelData.outputVoltageFallRate);
-    document.getElementById("NomNRSO").checked = channelData.outputNoRampAtSwitchOff;
-    document.getElementsByName("NomR")[channelData.outputRegulationMode].checked = true;
-    document.getElementById("IntSen").checked = channelData.internalSenseUse;
 
     document.getElementById("SupMinSV").value = numberFormat(channelData.outputSupervisionMinSenseVoltage);
     document.getElementById("SupMinSVFail").value = channelData.outputFailureMinSenseVoltage;
@@ -303,8 +271,8 @@
     document.getElementById("SupMaxTV").value = numberFormat(channelData.outputSupervisionMaxTerminalVoltage);
     document.getElementById("SupMaxTVMax").innerHTML = numberFormat(channelData.outputConfigMaxTerminalVoltage);
     document.getElementById("SupMaxTVFail").value = channelData.outputFailureMaxTerminalVoltage;
-    document.getElementById("SupMaxI").value = numberFormat(channelData.outputSupervisionMaxCurrent);
-    document.getElementById("SupMaxIMax").innerHTML = numberFormat(channelData.outputConfigMaxCurrent);
+    document.getElementById("SupMaxI").value = currentFormat(channelData.outputSupervisionMaxCurrent);
+    document.getElementById("SupMaxIMax").innerHTML = currentFormat(channelData.outputConfigMaxCurrent);
     document.getElementById("SupMaxIFail").value = channelData.outputFailureMaxCurrent;
     //        document.getElementById("SupMaxP").value = numberFormat(channelData.outputSupervisionMaxTemperature);
     //        document.getElementById("SupMaxPMax").innerHTML = numberFormat(channelData.outputConfigMaxTemperature);
@@ -323,36 +291,29 @@
 
     document.getElementById("MeasSV").innerHTML = numberFormat(channelData.outputMeasurementSenseVoltage);
     document.getElementById("MeasTV").innerHTML = numberFormat(channelData.outputMeasurementTerminalVoltage);
-    document.getElementById("MeasI").innerHTML = numberFormat(channelData.outputMeasurementCurrent);
+    document.getElementById("MeasI").innerHTML = currentFormat(channelData.outputMeasurementCurrent);
     document.getElementById("MeasHT").innerHTML = numberFormat(channelData.outputMeasurementTemperature);
     document.getElementById("MeasPL").innerHTML = numberFormat(channelData.outputMeasurementPowerLoad);
     document.getElementById("MeasPM").innerHTML = numberFormat(channelData.outputMeasurementPowerModule);
 
     document.getElementById("NomSVMax").innerHTML = numberFormat(channelData.outputSupervisionMaxSenseVoltage);
-    document.getElementById("NomCLMax").innerHTML = numberFormat(channelData.outputSupervisionMaxCurrent);
+    document.getElementById("NomCLMax").innerHTML = currentFormat(channelData.outputSupervisionMaxCurrent);
   }
 
   function updateChannel() {
     var channelName = document.getElementById("ch").value;
 
     setData("outputVoltage." + channelName, "F", document.getElementById("NomSV").value);
-    setData("outputCurrent." + channelName, "F", document.getElementById("NomCL").value);
+    setData("outputCurrent." + channelName, "F", document.getElementById("NomCL").value*0.001);
     setData("outputVoltageRiseRate." + channelName, "F", document.getElementById("NomRU").value);
     setData("outputVoltageFallRate." + channelName, "F", document.getElementById("NomRD").value);
-    setData("outputNoRampAtSwitchOff." + channelName, "i", (document.getElementById("NomNRSO").checked == true ? 1 : 0)); // modified
-
-    for (var i = 0; i < 3; i++)
-      if (document.getElementsByName("NomR")[i].checked == true)
-        setData("outputRegulationMode." + channelName, "i", i);
-
-    setData("internalSenseUse." + channelName, "i", (document.getElementById("IntSen").checked == true ? 1 : 0));
     setData("outputSupervisionMinSenseVoltage." + channelName, "F", document.getElementById("SupMinSV").value);
     setData("outputFailureMinSenseVoltage." + channelName, "i", document.getElementById("SupMinSVFail").value);
     setData("outputSupervisionMaxSenseVoltage." + channelName, "F", document.getElementById("SupMaxSV").value);
     setData("outputFailureMaxSenseVoltage." + channelName, "i", document.getElementById("SupMaxSVFail").value);
     setData("outputSupervisionMaxTerminalVoltage." + channelName, "F", document.getElementById("SupMaxTV").value);
     setData("outputFailureMaxTerminalVoltage." + channelName, "i", document.getElementById("SupMaxTVFail").value);
-    setData("outputSupervisionMaxCurrent." + channelName, "F", document.getElementById("SupMaxI").value);
+    setData("outputSupervisionMaxCurrent." + channelName, "F", document.getElementById("SupMaxI").value*0.001);
     setData("outputFailureMaxCurrent." + channelName, "i", document.getElementById("SupMaxIFail").value);
     //        setData("outputSupervisionMaxTemperature." + channelName, "F", document.getElementById("SupMaxP").value);
     //        setData("outputFailureMaxTemperature." + channelName, "i", document.getElementById("SupMaxPFail").value);
@@ -419,6 +380,10 @@
   }
 
   function numberFormat(value) {
+    return value.toFixed(1);
+  }
+
+  function currentFormat(value) {
     return value.toFixed(4);
   }
   // -----------------------------------------------------------------------
