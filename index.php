@@ -11,23 +11,23 @@ else
        Author: Genie Jhang
        e-mail: geniejhang@majimak.com
          Date: 2013. 07. 17
- Last Updated: 2015. 07. 01
+ Last Updated: 2016. 03. 14
 
-      Version: 2.0
+      Version: 2.1lv
 -->
 
 <html>
     <head>
         <meta charset='utf-8' />
-        <title>MPOD HV&LV Power Supply System Controller</title>
-        
+        <title>MPOD LV Power Supply System Controller</title>
+
         <link rel='stylesheet' href='./style.css'>
         <script src='./functions.js'></script>
 
         <script src="jquery-2.1.4.min.js"></script>
     </head>
     <body>
-        <h1>MPOD HV&LV Power Supply System Controller</h1>
+        <h1>MPOD LV Power Supply System Controller</h1>
         <div class='plain'>Crate IP Address:</div>
         <div class='plain'><input type='text' class='ipAddress' id='ipAddress' value='0.0.0.0' /></div>
         <div class='plain'><input type='button' value='Change' onclick='changeIP()' /></div>
@@ -51,8 +51,11 @@ else
         </div>
 
         <!-- Overcurrent alert -->
+        <div id='lcalert' class='lcalert'>
+            Low current<br>Alarm!
+        </div>
         <div id='ocalert' class='ocalert'>
-            Overcurrent<br>Alarm!
+            Over current<br>Alarm!
         </div>
 
         <!-- Group Controller -->
@@ -193,6 +196,7 @@ else
                 <div class='frameSpace2'>&nbsp;</div>
                 <div class='value2'>
                     <select class='value2' id='SupMaxTVFail'>
+                        <option value='0'>ignore the failure</option>
                         <option value='1'>switch off this channel</option>
                         <option value='2'>switch off all channels with the same group number</option>
                         <option value='3'>switch off the complete crate</option>

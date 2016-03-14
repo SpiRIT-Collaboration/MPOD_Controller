@@ -2,9 +2,9 @@
 //       Author: Genie Jhang
 //       e-mail: geniejhang@majimak.com
 //         Date: 2013. 07. 17
-// Last Updated: 2015. 07. 01
+// Last Updated: 2016. 03. 14
 //
-//      Version: 2.0
+//      Version: 2.1lv
 //--------------------------------------
 
 {
@@ -40,6 +40,7 @@
     getData("powerStatus", printPowerStatus);
     setInterval(function() {getData("powerStatus", printPowerStatus);}, 5001);
 
+    document.getElementById('lcalert').style.display = "none";
     document.getElementById('ocalert').style.display = "none";
   }
 
@@ -57,12 +58,12 @@
   // Change IP Part --------------------------------------------------------
   function printIPAddress(ipAddress) {
     document.getElementById('ipAddress').value = ipAddress;
-  } 
+  }
 
   function changeIP() {
-    var newIP = document.getElementById('ipAddress').value; 
+    var newIP = document.getElementById('ipAddress').value;
     writeSetting("IPAddress", newIP);
-  } 
+  }
   // -----------------------------------------------------------------------
 
   // Power Switch Part -----------------------------------------------------
@@ -114,6 +115,7 @@
 
     //create map here.
 
+    var lcFlag = 0;
     var ocFlag = 0;
     var channelList = "";
     for (var i = 0; i < numChannels; i++) {
@@ -134,12 +136,6 @@
       channelList += numberFormat(channelsData[index].data.outputVoltage);
       channelList += " ";
       channelList += channelsData[index].data.outputVoltageUnit;
-      /*
-         channelList += "</td><td>";
-         channelList += channelsData[index].data.outputVoltageRiseRate
-         channelList += " ";
-         channelList += channelsData[index].data.outputVoltageRiseRateUnit;
-       */
       channelList += "</td><td>";
       channelList += numberFormat(channelsData[index].data.outputMeasurementSenseVoltage);
       channelList += " ";
@@ -148,8 +144,10 @@
       var style = "color:black";
       var current = numberFormat(channelsData[index].data.outputMeasurementCurrent);
       if (isOn) {
-        if (current < currentMin)
+	  if (current < currentMin) {
           style = "color:black";
+          lcFlag = lcFlag|1;
+	  }
         else if (current > currentMin && current < currentMax)
           style = "color:green";
         else {
@@ -179,17 +177,13 @@
       }
       channelList += "</select></td><td>";
       channelList += "<input type='button' class='btn btn-" + (isOn ? "success" : "danger") + " btn-xs' value='" + capitalize(channelsData[index].data.outputSwitch) + "' onclick='setData(\"outputSwitch." + channelsData[index].name + "\", \"i\", " + (isOn ? "0" : "1") + ");'>";
-      /*            if (channelsData[index].data.outputSwitch == "on") {
-                    channelList += "<input type='button' value='On' onclick='setData(\"outputSwitch." + channelsData[index].name + "\", \"i\", \"1\");'>";
-                    channelList += "<input type='button' value='Off' disabled>";
-                    } else {
-                    channelList += "<input type='button' value='On' disabled>";
-                    channelList += "<input type='button' value='Off' onclick='setData(\"outputSwitch." + channelsData[index].name + "\", \"i\", \"0\");'>";
-                    }
-       */
       channelList += "</td></tr>";
     }
 
+    if (lcFlag)
+      document.getElementById('lcalert').style.display = "";
+    else
+      document.getElementById('lcalert').style.display = "none";
     if (ocFlag)
       document.getElementById('ocalert').style.display = "";
     else
@@ -200,7 +194,6 @@
 
   function printChannelList(channelList) {
     var orderCriterion = document.getElementById('order').value;
-    //        var header = "<table cellspacing='0' cellpadding='4px'><tr align='center' bgcolor='#ccffff'><td width='50px'>Name</td><td width='80px'>Voltage</td><td width='80px'>Current</td><td width='120px'>V Rise Rate</td><td width='90px'>Measured<br>Sense V</td><td width='90px'>Measured<br>Current</td><td width='90px'>Measured<br>Terminal V</td><td width='60px'>Switch</td></tr>";
     var header = "<table cellspacing='0' cellpadding='4px'><tr align='center' bgcolor='#ccffff'><td width='20px'><input type='checkbox'></td><td width='130px'>Name " + (orderCriterion == 0 ? "(<a href='?order=1'>UA</a>)" : "(<a href='?order=0'>U</a>)") + "</td><td width='80px'>Voltage</td><td width='90px'>Measured<br>Sense V</td><td width='90px'>Measured<br>Current</td><td width='90px'>Measured<br>Terminal V</td><td width='90px'>Maximum<br>Terminal V</td><td width='60px'>Group</td><td width='60px'>Switch</td></tr>";
     var footer = "</table>";
 
@@ -225,13 +218,13 @@
   }
 
   function groupOn() {
-    var selectedGroup = document.getElementById("selectedGroup").value;
+    var selectedGroup = parseInt(document.getElementById("selectedGroup").value) + 0x80;
 
     setData("groupsSwitch." + selectedGroup, "i", 1);
   }
 
   function groupOff() {
-    var selectedGroup = document.getElementById("selectedGroup").value;
+    var selectedGroup = parseInt(document.getElementById("selectedGroup").value) + 0x80;
 
     setData("groupsSwitch." + selectedGroup, "i", 0);
   }

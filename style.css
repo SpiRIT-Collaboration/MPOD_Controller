@@ -2,9 +2,9 @@
        Author: Genie Jhang
        e-mail: geniejhang@majimak.com
          Date: 2013. 07. 17
- Last Updated: 2015. 07. 01
+ Last Updated: 2016. 03. 14
 
-      Version: 2.0
+      Version: 2.1lv
 */
 
 channel {
@@ -217,10 +217,26 @@ a:hover {
     width:50px;
 }
 
+.lcalert {
+  position:fixed;
+  top:100px;
+/*  left:1130px; */
+  left:30px;
+  text-align:center;
+  font-weight:bold;
+  font-size:40pt;
+  color:white;
+  background:blue;
+  border:1px solid;
+  padding:8px;
+  border-color:black;
+}
+
 .ocalert {
   position:fixed;
   top:100px;
-  left:1130px;
+/*  left:1130px; */
+  left:30px;
   text-align:center;
   font-weight:bold;
   font-size:40pt;
