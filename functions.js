@@ -4,7 +4,7 @@
 //         Date: 2013. 07. 17
 // Last Updated: 2016. 03. 14
 //
-//      Version: 2.1hv
+//      Version: 2.2hv
 //--------------------------------------
 
 {
@@ -101,7 +101,6 @@
                                   'outputCurrent',
                                   'outputVoltageRiseRate',
                                   'outputMeasurementCurrent',
-                                  'outputSupervisionMaxCurrent',
                                   'outputMeasurementSenseVoltage',
                                   'outputMeasurementTerminalVoltage',
                                   'outputSupervisionMaxTerminalVoltage',
@@ -164,9 +163,11 @@
       channelList += " ";
       channelList += channelsData[index].data.outputMeasurementCurrentUnit;
       channelList += "</td><td>";
-      channelList += currentFormat(channelsData[index].data.outputSupervisionMaxCurrent);
+//      channelList += currentFormat(channelsData[index].data.outputSupervisionMaxCurrent);
+      channelList += currentFormat(channelsData[index].data.outputCurrent);
       channelList += " ";
-      channelList += channelsData[index].data.outputSupervisionMaxCurrentUnit;
+//      channelList += channelsData[index].data.outputSupervisionMaxCurrentUnit;
+      channelList += channelsData[index].data.outputCurrentUnit;
       channelList += "</td><td>";
       channelList += "<input type='button' class='btn btn-" + (isOn ? "success" : "danger") + " btn-xs' value='" + capitalize(channelsData[index].data.outputSwitch) + "' onclick='setData(\"outputSwitch." + channelsData[index].name + "\", \"i\", " + (isOn ? "0" : "1") + ");'>";
       channelList += "</td></tr>";

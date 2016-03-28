@@ -5,7 +5,7 @@
 //         Date: 2013. 07. 17
 // Last Updated: 2016. 03. 14
 //
-//      Version: 2.1hv
+//      Version: 2.2hv
 //--------------------------------------
 
 include 'setting.php';
@@ -33,7 +33,6 @@ if (isset($_GET['get'])) {
                            'outputCurrent',
                            'outputVoltageRiseRate',
                            'outputMeasurementCurrent',
-                           'outputSupervisionMaxCurrent',
                            'outputMeasurementSenseVoltage',
                            'outputMeasurementTerminalVoltage',
                            'outputSupervisionMaxTerminalVoltage',
