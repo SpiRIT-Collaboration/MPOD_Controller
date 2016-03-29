@@ -34,7 +34,7 @@ a:hover {
 }
 
 #measurement {
-    height:95px;
+    height:70px;
     padding:5px;
     border-width:1px;
     border-style:solid;
@@ -48,7 +48,7 @@ a:hover {
 }
 
 #supervision {
-    height:145px;
+    height:70px;
     padding:5px;
     border-width:1px;
     border-style:solid;

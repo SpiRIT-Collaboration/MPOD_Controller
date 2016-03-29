@@ -102,8 +102,8 @@
                                   'outputVoltageRiseRate',
                                   'outputMeasurementCurrent',
                                   'outputMeasurementSenseVoltage',
-                                  'outputMeasurementTerminalVoltage',
-                                  'outputSupervisionMaxTerminalVoltage',
+//                                  'outputMeasurementTerminalVoltage',
+//                                  'outputSupervisionMaxTerminalVoltage',
                                   'outputSwitch');
 
     var data = JSON.parse(rawdata);
@@ -251,36 +251,36 @@
     document.getElementById("ch").value = channelName;
 
     document.getElementById("MeasSV").innerHTML = numberFormat(channelData.outputMeasurementSenseVoltage);
-    document.getElementById("MeasTV").innerHTML = numberFormat(channelData.outputMeasurementTerminalVoltage);
+    //document.getElementById("MeasTV").innerHTML = numberFormat(channelData.outputMeasurementTerminalVoltage);
     document.getElementById("MeasI").innerHTML = currentFormat(channelData.outputMeasurementCurrent);
     document.getElementById("MeasHT").innerHTML = numberFormat(channelData.outputMeasurementTemperature);
-    document.getElementById("MeasPL").innerHTML = numberFormat(channelData.outputMeasurementPowerLoad);
+    //document.getElementById("MeasPL").innerHTML = numberFormat(channelData.outputMeasurementPowerLoad);
     document.getElementById("MeasPM").innerHTML = numberFormat(channelData.outputMeasurementPowerModule);
 
     document.getElementById("NomSV").value = numberFormat(channelData.outputVoltage);
-    document.getElementById("NomSVMax").innerHTML = numberFormat(channelData.outputSupervisionMaxSenseVoltage);
+    document.getElementById("NomSVMax").innerHTML = numberFormat(channelData.outputConfigMaxSenseVoltage);
     document.getElementById("NomCL").value = currentFormat(channelData.outputCurrentLimit);
     document.getElementById("NomCLMax").innerHTML = currentFormat(channelData.outputSupervisionMaxCurrent);
     document.getElementById("NomRU").value = numberFormat(channelData.outputVoltageRiseRate);
     document.getElementById("NomRD").value = numberFormat(channelData.outputVoltageFallRate);
 
-    document.getElementById("SupMinSV").value = numberFormat(channelData.outputSupervisionMinSenseVoltage);
-    document.getElementById("SupMinSVFail").value = channelData.outputFailureMinSenseVoltage;
-    document.getElementById("SupMaxSV").value = numberFormat(channelData.outputSupervisionMaxSenseVoltage);
-    document.getElementById("SupMaxSVMax").innerHTML = numberFormat(channelData.outputConfigMaxSenseVoltage);
-    document.getElementById("SupMaxSVFail").value = channelData.outputFailureMaxSenseVoltage;
-    document.getElementById("SupMaxTV").value = numberFormat(channelData.outputSupervisionMaxTerminalVoltage);
-    document.getElementById("SupMaxTVMax").innerHTML = numberFormat(channelData.outputConfigMaxTerminalVoltage);
-    document.getElementById("SupMaxTVFail").value = channelData.outputFailureMaxTerminalVoltage;
+    //document.getElementById("SupMinSV").value = numberFormat(channelData.outputSupervisionMinSenseVoltage);
+    //document.getElementById("SupMinSVFail").value = channelData.outputFailureMinSenseVoltage;
+    //document.getElementById("SupMaxSV").value = numberFormat(channelData.outputSupervisionMaxSenseVoltage);
+    //document.getElementById("SupMaxSVMax").innerHTML = numberFormat(channelData.outputConfigMaxSenseVoltage);
+    //document.getElementById("SupMaxSVFail").value = channelData.outputFailureMaxSenseVoltage;
+    //document.getElementById("SupMaxTV").value = numberFormat(channelData.outputSupervisionMaxTerminalVoltage);
+    //document.getElementById("SupMaxTVMax").innerHTML = numberFormat(channelData.outputConfigMaxTerminalVoltage);
+    //document.getElementById("SupMaxTVFail").value = channelData.outputFailureMaxTerminalVoltage;
     document.getElementById("SupMaxI").value = currentFormat(channelData.outputSupervisionMaxCurrent);
     document.getElementById("SupMaxIMax").innerHTML = currentFormat(channelData.outputConfigMaxCurrent);
     document.getElementById("SupMaxIFail").value = channelData.outputFailureMaxCurrent;
-    //        document.getElementById("SupMaxP").value = numberFormat(channelData.outputSupervisionMaxTemperature);
-    //        document.getElementById("SupMaxPMax").innerHTML = numberFormat(channelData.outputConfigMaxTemperature);
-    //        document.getElementById("SupMaxPFail").value = channelData.outputFailureMaxTemperature;
-    //        document.getElementById("SupMaxT").value = numberFormat(channelData.outputSupervisionMaxPower);
-    //        document.getElementById("SupMaxTMax").innerHTML = numberFormat(channelData.outputConfigMaxPower);
-    //        document.getElementById("SupMaxTFail").value = channelData.outputFailureMaxPower;
+    //document.getElementById("SupMaxP").value = numberFormat(channelData.outputSupervisionMaxTemperature);
+    //document.getElementById("SupMaxPMax").innerHTML = numberFormat(channelData.outputConfigMaxTemperature);
+    //document.getElementById("SupMaxPFail").value = channelData.outputFailureMaxTemperature;
+    //document.getElementById("SupMaxT").value = numberFormat(channelData.outputSupervisionMaxPower);
+    //document.getElementById("SupMaxTMax").innerHTML = numberFormat(channelData.outputConfigMaxPower);
+    //document.getElementById("SupMaxTFail").value = channelData.outputFailureMaxPower;
 
     setViewChannelController(channelName, "");
   }
@@ -291,13 +291,13 @@
     var channelData = data.data;
 
     document.getElementById("MeasSV").innerHTML = numberFormat(channelData.outputMeasurementSenseVoltage);
-    document.getElementById("MeasTV").innerHTML = numberFormat(channelData.outputMeasurementTerminalVoltage);
+    //document.getElementById("MeasTV").innerHTML = numberFormat(channelData.outputMeasurementTerminalVoltage);
     document.getElementById("MeasI").innerHTML = currentFormat(channelData.outputMeasurementCurrent);
     document.getElementById("MeasHT").innerHTML = numberFormat(channelData.outputMeasurementTemperature);
-    document.getElementById("MeasPL").innerHTML = numberFormat(channelData.outputMeasurementPowerLoad);
+    //document.getElementById("MeasPL").innerHTML = numberFormat(channelData.outputMeasurementPowerLoad);
     document.getElementById("MeasPM").innerHTML = numberFormat(channelData.outputMeasurementPowerModule);
 
-    document.getElementById("NomSVMax").innerHTML = numberFormat(channelData.outputSupervisionMaxSenseVoltage);
+    //document.getElementById("NomSVMax").innerHTML = numberFormat(channelData.outputSupervisionMaxSenseVoltage);
     document.getElementById("NomCLMax").innerHTML = currentFormat(channelData.outputSupervisionMaxCurrent);
   }
 
@@ -308,18 +308,18 @@
     setData("outputCurrent." + channelName, "F", document.getElementById("NomCL").value*0.001);
     setData("outputVoltageRiseRate." + channelName, "F", document.getElementById("NomRU").value);
     setData("outputVoltageFallRate." + channelName, "F", document.getElementById("NomRD").value);
-    setData("outputSupervisionMinSenseVoltage." + channelName, "F", document.getElementById("SupMinSV").value);
-    setData("outputFailureMinSenseVoltage." + channelName, "i", document.getElementById("SupMinSVFail").value);
-    setData("outputSupervisionMaxSenseVoltage." + channelName, "F", document.getElementById("SupMaxSV").value);
-    setData("outputFailureMaxSenseVoltage." + channelName, "i", document.getElementById("SupMaxSVFail").value);
-    setData("outputSupervisionMaxTerminalVoltage." + channelName, "F", document.getElementById("SupMaxTV").value);
-    setData("outputFailureMaxTerminalVoltage." + channelName, "i", document.getElementById("SupMaxTVFail").value);
+    //setData("outputSupervisionMinSenseVoltage." + channelName, "F", document.getElementById("SupMinSV").value);
+    //setData("outputFailureMinSenseVoltage." + channelName, "i", document.getElementById("SupMinSVFail").value);
+    //setData("outputSupervisionMaxSenseVoltage." + channelName, "F", document.getElementById("SupMaxSV").value);
+    //setData("outputFailureMaxSenseVoltage." + channelName, "i", document.getElementById("SupMaxSVFail").value);
+    //setData("outputSupervisionMaxTerminalVoltage." + channelName, "F", document.getElementById("SupMaxTV").value);
+    //setData("outputFailureMaxTerminalVoltage." + channelName, "i", document.getElementById("SupMaxTVFail").value);
     setData("outputSupervisionMaxCurrent." + channelName, "F", document.getElementById("SupMaxI").value*0.001);
     setData("outputFailureMaxCurrent." + channelName, "i", document.getElementById("SupMaxIFail").value);
-    //        setData("outputSupervisionMaxTemperature." + channelName, "F", document.getElementById("SupMaxP").value);
-    //        setData("outputFailureMaxTemperature." + channelName, "i", document.getElementById("SupMaxPFail").value);
-    //        setData("outputSupervisionMaxPower." + channelName, "F", document.getElementById("SupMaxT").value);
-    //        setData("outputFailureMaxPower." + channelName, "F", document.getElementById("SupMaxTFail").value);
+    //setData("outputSupervisionMaxTemperature." + channelName, "F", document.getElementById("SupMaxP").value);
+    //setData("outputFailureMaxTemperature." + channelName, "i", document.getElementById("SupMaxPFail").value);
+    //setData("outputSupervisionMaxPower." + channelName, "F", document.getElementById("SupMaxT").value);
+    //setData("outputFailureMaxPower." + channelName, "F", document.getElementById("SupMaxTFail").value);
 
     setViewChannelController(channelName, "");
   }

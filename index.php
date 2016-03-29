@@ -83,17 +83,17 @@ else
                     <div class='measLeftLabel'>Sense Voltage [V]</div>
                     <div class='value' id='MeasSV'>0.000</div>
                     <div class='clear'></div>
-                    <div class='measLeftLabel'>Terminal Voltage [V]</div>
-                    <div class='value' id='MeasTV'>0.000</div>
+                    <!--<div class='measLeftLabel'>Terminal Voltage [V]</div>
+                    <div class='value' id='MeasTV'>0.000</div>-->
                     <div class='clear'></div>
                     <div class='measLeftLabel'>Current [mA]</div>
                     <div class='value' id='MeasI'>0.000</div>
                 </div>
                 <div class='frameSpace'>&nbsp;</div>
                 <div class='measRightFrame'>
-                    <div class='measRightLabel'>Power of the Load [W]</div>
+                    <!--<div class='measRightLabel'>Power of the Load [W]</div>
                     <div class='value' id='MeasPL'>0.000</div>
-                    <div class='clear'></div>
+                    <div class='clear'></div>-->
                     <div class='measRightLabel'>Power of the Module [W]</div>
                     <div class='value' id='MeasPM'>0.000</div>
                     <div class='clear'></div>
@@ -140,45 +140,10 @@ else
                 <div class='frameSpace2'>&nbsp;</div>
                 <div class='info2'>on failure:</div>
                 <div class='clear'></div>
-                <div class='supLabel'>min. Sense Voltage [V]</div>
-                <div class='input'><input type='text' class='input' id='SupMinSV' value='0.000'></div>
-                <div class='info'>&nbsp;</div>
-                <div class='frameSpace2'>&nbsp;</div>
-                <div class='value2'>
-                    <select class='value2' id='SupMinSVFail'>
-                        <option value='0'>ignore the failure</option>
-                        <option value='1'>switch off this channel by ramp down the voltage</option>
-                        <option value='2'>switch off this channel by a emergencyOff</option>
-                        <option value='3'>switch off the whole board of the HV module by emergencyOff</option>
-                    </select>
-                </div>
-                <div class='clear'></div>
-                <div class='supLabel'>max. Sense Voltage [V]</div>
-                <div class='input'><input type='text' class='input' id='SupMaxSV' value='0.000'></div>
-                <div class='info' id='SupMaxSVMax'>0.000</div>
-                <div class='frameSpace2'>&nbsp;</div>
-                <div class='value2'>
-                    <select class='value2' id='SupMaxSVFail'>
-                        <option value='0'>ignore the failure</option>
-                        <option value='1'>switch off this channel by ramp down the voltage</option>
-                        <option value='2'>switch off this channel by a emergencyOff</option>
-                        <option value='3'>switch off the whole board of the HV module by emergencyOff</option>
-                    </select>
-                </div>
-                <div class='clear'></div>
-                <div class='supLabel'>max. Terminal Voltage [V]</div>
+                <!--<div class='supLabel'>max. Terminal Voltage [V]</div>
                 <div class='input'><input type='text' class='input' id='SupMaxTV' value='0.000'></div>
                 <div class='info' id='SupMaxTVMax'>0.000</div>
-                <div class='frameSpace2'>&nbsp;</div>
-                <div class='value2'>
-                    <select class='value2' id='SupMaxTVFail'>
-                        <option value='0'>ignore the failure</option>
-                        <option value='1'>switch off this channel by ramp down the voltage</option>
-                        <option value='2'>switch off this channel by a emergencyOff</option>
-                        <option value='3'>switch off the whole board of the HV module by emergencyOff</option>
-                    </select>
-                </div>
-                <div class='clear'></div>
+                <div class='clear'></div>-->
                 <div class='supLabel'>max. Current [mA]</div>
                 <div class='input'><input type='text' class='input' id='SupMaxI' value='0.000'></div>
                 <div class='info' id='SupMaxIMax'>0.000</div>

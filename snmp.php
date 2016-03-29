@@ -34,8 +34,8 @@ if (isset($_GET['get'])) {
                            'outputVoltageRiseRate',
                            'outputMeasurementCurrent',
                            'outputMeasurementSenseVoltage',
-                           'outputMeasurementTerminalVoltage',
-                           'outputSupervisionMaxTerminalVoltage',
+//                           'outputMeasurementTerminalVoltage',
+//                           'outputSupervisionMaxTerminalVoltage',
                            'outputSwitch');
 
     $numData = count($dataNameArray);
