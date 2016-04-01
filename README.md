@@ -22,6 +22,8 @@ How to Use
 4. Change IP address in `settings.json` file.
 5. Type `php configure.php` to run configure.php file.
 6. Modify `mapping.json` file according to the mapping for the experiment.
+7. Install the latest version of NET-SNMP from source code. (http://sourceforge.net/p/net-snmp/code)
+8. Change the installed path in `snmp.php`.
 
 Author list
 -----------
@@ -29,6 +31,14 @@ Original Author: Genie Jhang (geniejhang@majimak.com)
 
 Note
 ----
+2016/04/01 by the original author<br>
+Release of version 2.3hv.
+- The latest version of NET-SNMP is used for displaying more digits of small current. (http://sourceforge.net/p/net-snmp/code)
+
+2016/03/29
+Release of version 2.2hv.
+- Removal of unused features for HV modules
+
 2016/03/15 by the original author<br>
 Release of two separated versions 2.1lv and 2.1hv.
 

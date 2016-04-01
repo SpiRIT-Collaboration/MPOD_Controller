@@ -3,24 +3,35 @@
 //       Author: Genie Jhang
 //       e-mail: geniejhang@majimak.com
 //         Date: 2013. 07. 17
-// Last Updated: 2016. 03. 14
+// Last Updated: 2016. 04. 01
 //
-//      Version: 2.2hv
+//      Version: 2.3hv
 //--------------------------------------
 
 include 'setting.php';
+function new_snmpget($ip, $community, $oid, $timeout, $retry) {
+  $netSnmpPath = '/home/spirit/public_html/mpod3/net-snmp';
+  putenv('PATH='.$netSnmpPath.'/bin'.':'.getenv('PATH'));
+  putenv('LD_LIBRARY_PATH='.$netSnmpPath.'/lib'.':'.getenv('LD_LIBRARY_PATH'));
+  $value = exec('snmpget -v2c -m ./WIENER-CRATE-MIB.txt -Oqvp +05.9 -c '.$community.' '.$ip.' '.$oid);
+
+  if ($value === 'No Such Instance currently exists at this OID')
+    return '';
+  else
+    return $value;
+}
 
 $ip = readSetting('IPAddress');
 
-snmp_set_quick_print(TRUE);
-snmp_read_mib('./WIENER-CRATE-MIB.txt');
+//snmp_set_quick_print(TRUE);
+//snmp_read_mib('./WIENER-CRATE-MIB.txt');
 
 // Getting Part
 if (isset($_GET['get'])) {
   $get = $_GET['get'];
 
   if ($get == 'powerStatus') {
-    $status = snmpget($ip, 'public', 'sysMainSwitch.0', 5000, 0);
+    $status = new_snmpget($ip, 'public', 'sysMainSwitch.0', 5000, 0);
 
     if ($status == 'off')
       echo 'Off';
@@ -53,13 +64,13 @@ if (isset($_GET['get'])) {
       $channel["data"] = array();
 
       for ($j = 0; $j < $numData; $j++) {
-        $data = snmpget($ip, 'public', $dataNameArray[$j].'.'.strtolower($nameArray[$i]), 2000, 0);
+        $data = new_snmpget($ip, 'public', $dataNameArray[$j].'.'.strtolower($nameArray[$i]), 2000, 0);
 
         if ($j < $numData - 1) {
           $valueNunit = explode(' ', $data);
           if ($valueNunit[1] === 'A') {
-            $valueNunit[0] = doubleval($valueNunit[0])*1000.;
-            $valueNunit[1] = 'mA';
+            $valueNunit[0] = doubleval($valueNunit[0])*1000000.;
+            $valueNunit[1] = 'µA';
           }
 
           $channel['data'][$dataNameArray[$j]] = doubleval($valueNunit[0]);
@@ -105,74 +116,74 @@ if (isset($_GET['get'])) {
     $ch = $get;
 
     // Measurement Part
-    $data = explode(' ', snmpget($ip, 'public', 'outputMeasurementSenseVoltage.'.$ch, 2000, 0));
-    $MeasSV = $data[0];
+    $data = explode(' ', new_snmpget($ip, 'public', 'outputMeasurementSenseVoltage.'.$ch, 2000, 0));
+    $MeasSV = doubleval($data[0]);
     $MeasSVUnit = $data[1];
-    $data = explode(' ', snmpget($ip, 'public', 'outputMeasurementTerminalVoltage.'.$ch, 2000, 0));
-    $MeasTV = $data[0];
+    $data = explode(' ', new_snmpget($ip, 'public', 'outputMeasurementTerminalVoltage.'.$ch, 2000, 0));
+    $MeasTV = doubleval($data[0]);
     $MeasTVUnit = $data[1];
-    $data = explode(' ', snmpget($ip, 'public', 'outputMeasurementCurrent.'.$ch, 2000, 0));
-    $MeasI = $data[0];
+    $data = explode(' ', new_snmpget($ip, 'public', 'outputMeasurementCurrent.'.$ch, 2000, 0));
+    $MeasI = doubleval($data[0]);
     $MeasIUnit = $data[1];
-    $MeasHT = snmpget($ip, 'public', 'outputMeasurementTemperature.'.$ch, 2000, 0);
+    $MeasHT = new_snmpget($ip, 'public', 'outputMeasurementTemperature.'.$ch, 2000, 0);
     $MeasPL = $MeasI*$MeasTV;
-    $MeasPM = $MeasI*$MeasSV;
+    $MeasPM = $MeasI*$MeasSV*0.001;
 
     // Nominal Part
-    $data = explode(' ', snmpget($ip, 'public', 'outputVoltage.'.$ch, 2000, 0));
-    $NomSV = $data[0];
+    $data = explode(' ', new_snmpget($ip, 'public', 'outputVoltage.'.$ch, 2000, 0));
+    $NomSV = doubleval($data[0]);
     $NomSVUnit = $data[1];
-    $data = explode(' ', snmpget($ip, 'public', 'outputCurrent.'.$ch, 2000, 0));
-    $NomCL = $data[0];
+    $data = explode(' ', new_snmpget($ip, 'public', 'outputCurrent.'.$ch, 2000, 0));
+    $NomCL = doubleval($data[0]);
     $NomCLUnit = $data[1];
-    $data = explode(' ', snmpget($ip, 'public', 'outputVoltageRiseRate.'.$ch, 2000, 0));
-    $NomRU = $data[0];
+    $data = explode(' ', new_snmpget($ip, 'public', 'outputVoltageRiseRate.'.$ch, 2000, 0));
+    $NomRU = doubleval($data[0]);
     $NomRUUnit = $data[1];
-    $data = explode(' ', snmpget($ip, 'public', 'outputVoltageFallRate.'.$ch, 2000, 0));
-    $NomRD = $data[0];
+    $data = explode(' ', new_snmpget($ip, 'public', 'outputVoltageFallRate.'.$ch, 2000, 0));
+    $NomRD = doubleval($data[0]);
     $NomRDUnit = $data[1];
 
     // Supervision Part
-    $SupBehavior = snmpget($ip, 'public', 'outputSupervisionBehavior.'.$ch, 2000, 0);
+    $SupBehavior = new_snmpget($ip, 'public', 'outputSupervisionBehavior.'.$ch, 2000, 0);
 
-    $data = explode(' ', snmpget($ip, 'public', 'outputSupervisionMinSenseVoltage.'.$ch, 2000, 0));
+    $data = explode(' ', new_snmpget($ip, 'public', 'outputSupervisionMinSenseVoltage.'.$ch, 2000, 0));
     $SupMinSV = 0; //$data[0];
     $SupMinSVUnit = $data[1];
     $SupMinSVFail = ($SupBehavior & 0x3);
-    $data = explode(' ', snmpget($ip, 'public', 'outputSupervisionMaxSenseVoltage.'.$ch, 2000, 0));
+    $data = explode(' ', new_snmpget($ip, 'public', 'outputSupervisionMaxSenseVoltage.'.$ch, 2000, 0));
     $SupMaxSV = 0; //$data[0];
     $SupMaxSVUnit = $data[1];
-    $data = explode(' ', snmpget($ip, 'public', 'outputConfigMaxSenseVoltage.'.$ch, 2000, 0));
-    $SupMaxSVMax = $data[0];
+    $data = explode(' ', new_snmpget($ip, 'public', 'outputConfigMaxSenseVoltage.'.$ch, 2000, 0));
+    $SupMaxSVMax = doubleval($data[0]);
     $SupMaxSVMaxUnit = $data[1];
     $SupMaxSVFail = (($SupBehavior & 0xc) >> 2);
-    $data = explode(' ', snmpget($ip, 'public', 'outputSupervisionMaxTerminalVoltage.'.$ch, 2000, 0));
-    $SupMaxTV = $data[0];
+    $data = explode(' ', new_snmpget($ip, 'public', 'outputSupervisionMaxTerminalVoltage.'.$ch, 2000, 0));
+    $SupMaxTV = doubleval($data[0]);
     $SupMaxTVUnit = $data[1];
-    $data = explode(' ', snmpget($ip, 'public', 'outputConfigMaxTerminalVoltage.'.$ch, 2000, 0));
-    $SupMaxTVMax = $data[0];
+    $data = explode(' ', new_snmpget($ip, 'public', 'outputConfigMaxTerminalVoltage.'.$ch, 2000, 0));
+    $SupMaxTVMax = doubleval($data[0]);
     $SupMaxTVMaxUnit = $data[1];
     $SupMaxTVFail = (($SupBehavior & 0x30) >> 4);
-    $data = explode(' ', snmpget($ip, 'public', 'outputSupervisionMaxCurrent.'.$ch, 2000, 0));
-    $SupMaxI = $data[0];
+    $data = explode(' ', new_snmpget($ip, 'public', 'outputSupervisionMaxCurrent.'.$ch, 2000, 0));
+    $SupMaxI = doubleval($data[0]);
     $SupMaxIUnit = $data[1];
-    $data = explode(' ', snmpget($ip, 'public', 'outputConfigMaxCurrent.'.$ch, 2000, 0));
-    $SupMaxIMax = $data[0];
+    $data = explode(' ', new_snmpget($ip, 'public', 'outputConfigMaxCurrent.'.$ch, 2000, 0));
+    $SupMaxIMax = doubleval($data[0]);
     $SupMaxIMaxUnit = $data[1];
     $SupMaxIFail = (($SupBehavior & 0xc0) >> 6);
 
     /*
-       $data = explode(' ', snmpget($ip, 'public', 'outputSupervisionMaxTemperature.'.$ch, 2000, 0));
+       $data = explode(' ', new_snmpget($ip, 'public', 'outputSupervisionMaxTemperature.'.$ch, 2000, 0));
        $SupMaxT = 0; //$data[0];
        $SupMaxTUnit = "none";
-       $data = explode(' ', snmpget($ip, 'public', 'outputConfigMaxTemperature.'.$ch, 2000, 0));
+       $data = explode(' ', new_snmpget($ip, 'public', 'outputConfigMaxTemperature.'.$ch, 2000, 0));
        $SupMaxTMax = 0; //$data[0];
        $SupMaxTMaxUnit = "none"; //$data[1];
        $SupMaxTFail = (($SubBehavior & 0x300) >> 8);
-       $data = explode(' ', snmpget($ip, 'public', 'outputSupervisionMaxPower.'.$ch, 2000, 0));
+       $data = explode(' ', new_snmpget($ip, 'public', 'outputSupervisionMaxPower.'.$ch, 2000, 0));
        $SupMaxP = $data[0];
        $SupMaxPUnit = $data[1];
-       $data = explode(' ', snmpget($ip, 'public', 'outputConfigMaxPower.'.$ch, 2000, 0));
+       $data = explode(' ', new_snmpget($ip, 'public', 'outputConfigMaxPower.'.$ch, 2000, 0));
        $SupMaxPMax = 0; //$data[0];
        $SupMaxPMaxUnit = "none";//$data[1];
        $SupMaxPFail = (($SubBehavior & 0xc00) >> 10);
@@ -238,8 +249,8 @@ if (isset($_GET['get'])) {
     echo '"outputMeasurementTerminalVoltage":'.$MeasTV.',';
     echo '"outputMeasurementTerminalVoltageUnit":"'.$MeasTVUnit.'",';
     if ($MeasIUnit === 'A') {
-      $MeasI *= 1000.;
-      $MeasIUnit = 'mA';
+      $MeasI *= 1000000.;
+      $MeasIUnit = 'µA';
     }
     echo '"outputMeasurementCurrent":'.$MeasI.',';
     echo '"outputMeasurementCurrentUnit":"'.$MeasIUnit.'",';
@@ -249,8 +260,8 @@ if (isset($_GET['get'])) {
     echo '"outputVoltage":'.$NomSV.',';
     echo '"outputVoltageUnit":"'.$NomSVUnit.'",';
     if ($NomCLUnit === 'A') {
-      $NomCL *= 1000.;
-      $NomCLUnit = 'mA';
+      $NomCL *= 1000000.;
+      $NomCLUnit = 'µA';
     }
     echo '"outputCurrentLimit":'.$NomCL.',';
     echo '"outputCurrentLimitUnit":"'.$NomCLUnit.'",';
@@ -272,14 +283,14 @@ if (isset($_GET['get'])) {
     echo '"outputConfigMaxTerminalVoltageUnit":"'.$SupMaxTVMaxUnit.'",';
     echo '"outputFailureMaxTerminalVoltage":'.$SupMaxTVFail.',';
     if ($SupMaxIUnit === 'A') {
-        $SupMaxI *= 1000.;
-        $SupMaxIUnit = 'mA';
+        $SupMaxI *= 1000000.;
+        $SupMaxIUnit = 'µA';
     }
     echo '"outputSupervisionMaxCurrent":'.$SupMaxI.',';
     echo '"outputSupervisionMaxCurrentUnit":"'.$SupMaxIUnit.'",';
     if ($SupMaxIMaxUnit === 'A') {
-        $SupMaxIMax *= 1000.;
-        $SupMaxIMaxUnit = 'mA';
+        $SupMaxIMax *= 1000000.;
+        $SupMaxIMaxUnit = 'µA';
     }
     echo '"outputConfigMaxCurrent":'.$SupMaxIMax.',';
     echo '"outputConfigMaxCurrentUnit":"'.$SupMaxIMaxUnit.'",';
@@ -312,40 +323,40 @@ if (isset($_GET['set'])) {
   $channel = $explodedSet[1];
   if ($parameter == 'outputNoRampAtSwitchOff') {
     $set = 'outputUserConfig.'.$channel;
-    $oldvalue = snmpget($ip, 'public', $set, 5000, 0);
+    $oldvalue = new_snmpget($ip, 'public', $set, 5000, 0);
     $oldvalue = ($oldvalue & 0x3e);
     $value = ($oldvalue | $value);
   } else if ($parameter == 'outputRegulationMode') {
     $set = 'outputUserConfig.'.$channel;
-    $oldvalue = snmpget($ip, 'public', $set, 5000, 0);
+    $oldvalue = new_snmpget($ip, 'public', $set, 5000, 0);
     $oldvalue = ($oldvalue & 0x39);
     $value = ($oldvalue | ($value << 1));
   } else if ($parameter == 'internalSenseUse') {
     $set = 'outputUserConfig.'.$channel;
-    $oldvalue = snmpget($ip, 'public', $set, 5000, 0);
+    $oldvalue = new_snmpget($ip, 'public', $set, 5000, 0);
     $oldvalue = ($oldvalue & 0x37);
     $value = ($oldvalue | ($value << 3));
   } else if ($parameter == 'outputFailureMinSenseVoltage') {
     $set = 'outputSupervisionBehavior.'.$channel;
-    $oldvalue = snmpget($ip, 'public', $set, 5000, 0);
+    $oldvalue = new_snmpget($ip, 'public', $set, 5000, 0);
     $oldvalue = ($oldvalue & 0xfffc);
     $value = ($oldvalue | $value);
     echo $channel." ".$parameter." ".$value;
   } else if ($parameter == 'outputFailureMaxSenseVoltage') {
     $set = 'outputSupervisionBehavior.'.$channel;
-    $oldvalue = snmpget($ip, 'public', $set, 5000, 0);
+    $oldvalue = new_snmpget($ip, 'public', $set, 5000, 0);
     $oldvalue = ($oldvalue & 0xfff3);
     $value = ($oldvalue | ($value << 2));
     echo $channel." ".$parameter." ".$value;
   } else if ($parameter == 'outputFailureMaxTerminalVoltage') {
     $set = 'outputSupervisionBehavior.'.$channel;
-    $oldvalue = snmpget($ip, 'public', $set, 5000, 0);
+    $oldvalue = new_snmpget($ip, 'public', $set, 5000, 0);
     $oldvalue = ($oldvalue & 0xffcf);
     $value = ($oldvalue | ($value << 4));
     echo $channel." ".$parameter." ".$value;
   } else if ($parameter == 'outputFailureMaxCurrent') {
     $set = 'outputSupervisionBehavior.'.$channel;
-    $oldvalue = snmpget($ip, 'public', $set, 5000, 0);
+    $oldvalue = new_snmpget($ip, 'public', $set, 5000, 0);
     $oldvalue = ($oldvalue & 0xff3f);
     $value = ($oldvalue | ($value << 6));
     echo $channel." ".$parameter." ".$value;

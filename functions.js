@@ -2,9 +2,9 @@
 //       Author: Genie Jhang
 //       e-mail: geniejhang@majimak.com
 //         Date: 2013. 07. 17
-// Last Updated: 2016. 03. 14
+// Last Updated: 2016. 04. 01
 //
-//      Version: 2.2hv
+//      Version: 2.3hv
 //--------------------------------------
 
 {
@@ -187,7 +187,7 @@
 
   function printChannelList(channelList) {
     var orderCriterion = document.getElementById('order').value;
-    var header = "<table cellspacing='0' cellpadding='4px'><tr align='center' bgcolor='#ccffff'><td width='20px'><input type='checkbox'></td><td width='130px'>Name " + (orderCriterion == 0 ? "(<a href='?order=1'>TPC</a>)" : "(<a href='?order=0'>U</a>)") + "</td><td width='80px'>Voltage</td><td width='90px'>Measured<br>Sense V</td><td width='90px'>Ramp Up<br>Rate</td><td width='90px'>Measured<br>Current</td><td width='90px'>Current<br>Limit</td><td width='60px'>Switch</td></tr>";
+    var header = "<table cellspacing='0' cellpadding='4px'><tr align='center' bgcolor='#ccffff'><td width='20px'><input type='checkbox'></td><td width='130px'>Name " + (orderCriterion == 0 ? "(<a href='?order=1'>TPC</a>)" : "(<a href='?order=0'>U</a>)") + "</td><td width='80px'>Voltage</td><td width='90px'>Measured<br>Sense V</td><td width='90px'>Ramp Up<br>Rate</td><td width='90px'>Measured<br>Current</td><td width='120px'>Current<br>Limit</td><td width='60px'>Switch</td></tr>";
     var footer = "</table>";
 
     var channelListTable = document.getElementById("channelList");
@@ -234,7 +234,7 @@
 
     var channelController = document.getElementById("channelController");
     channelController.style.position = "fixed";
-    channelController.style.left = "735px";
+    channelController.style.left = "760px";
     channelController.style.top = "260px";
     channelController.style.zIndex = 10;
     channelController.style.display = hidden;
@@ -305,7 +305,7 @@
     var channelName = document.getElementById("ch").value;
 
     setData("outputVoltage." + channelName, "F", document.getElementById("NomSV").value);
-    setData("outputCurrent." + channelName, "F", document.getElementById("NomCL").value*0.001);
+    setData("outputCurrent." + channelName, "F", document.getElementById("NomCL").value*0.000001);
     setData("outputVoltageRiseRate." + channelName, "F", document.getElementById("NomRU").value);
     setData("outputVoltageFallRate." + channelName, "F", document.getElementById("NomRD").value);
     //setData("outputSupervisionMinSenseVoltage." + channelName, "F", document.getElementById("SupMinSV").value);
@@ -314,7 +314,7 @@
     //setData("outputFailureMaxSenseVoltage." + channelName, "i", document.getElementById("SupMaxSVFail").value);
     //setData("outputSupervisionMaxTerminalVoltage." + channelName, "F", document.getElementById("SupMaxTV").value);
     //setData("outputFailureMaxTerminalVoltage." + channelName, "i", document.getElementById("SupMaxTVFail").value);
-    setData("outputSupervisionMaxCurrent." + channelName, "F", document.getElementById("SupMaxI").value*0.001);
+    setData("outputSupervisionMaxCurrent." + channelName, "F", document.getElementById("SupMaxI").value*0.000001);
     setData("outputFailureMaxCurrent." + channelName, "i", document.getElementById("SupMaxIFail").value);
     //setData("outputSupervisionMaxTemperature." + channelName, "F", document.getElementById("SupMaxP").value);
     //setData("outputFailureMaxTemperature." + channelName, "i", document.getElementById("SupMaxPFail").value);
@@ -385,7 +385,7 @@
   }
 
   function currentFormat(value) {
-    return value.toFixed(4);
+    return value.toFixed(3);
   }
   // -----------------------------------------------------------------------
 

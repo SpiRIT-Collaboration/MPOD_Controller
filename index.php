@@ -11,9 +11,9 @@ else
        Author: Genie Jhang
        e-mail: geniejhang@majimak.com
          Date: 2013. 07. 17
- Last Updated: 2016. 03. 14
+ Last Updated: 2016. 04. 01
 
-      Version: 2.1hv
+      Version: 2.3hv
 -->
 
 <html>
@@ -45,9 +45,9 @@ else
         <div id='rangeSelector' class='groupController' style='position:absolute; left:546px; top:140px; width:220px; height:80px;'>
             <div class='title'>Safe Current Range</div>
             <div class='clear'></div>
-            <div style='width:85px;float:left;text-align:right;'>Minimum:</div><div style='float:left;'><input type='text' id='currentMin' size='10' value='1.2' /> mA</div>
+            <div style='width:85px;float:left;text-align:right;'>Minimum:</div><div style='float:left;'><input type='text' id='currentMin' size='10' value='0.0' /> µA</div>
             <div class='clear'></div>
-            <div style='width:85px;float:left;text-align:right;'>Maximum:</div><div style='float:left;'><input type='text' id='currentMax' size='10' value='1.5' /> mA</div>
+            <div style='width:85px;float:left;text-align:right;'>Maximum:</div><div style='float:left;'><input type='text' id='currentMax' size='10' value='0.50' /> µA</div>
         </div>
 
         <!-- Overcurrent alert -->
@@ -86,7 +86,7 @@ else
                     <!--<div class='measLeftLabel'>Terminal Voltage [V]</div>
                     <div class='value' id='MeasTV'>0.000</div>-->
                     <div class='clear'></div>
-                    <div class='measLeftLabel'>Current [mA]</div>
+                    <div class='measLeftLabel'>Current [µA]</div>
                     <div class='value' id='MeasI'>0.000</div>
                 </div>
                 <div class='frameSpace'>&nbsp;</div>
@@ -94,7 +94,7 @@ else
                     <!--<div class='measRightLabel'>Power of the Load [W]</div>
                     <div class='value' id='MeasPL'>0.000</div>
                     <div class='clear'></div>-->
-                    <div class='measRightLabel'>Power of the Module [W]</div>
+                    <div class='measRightLabel'>Power of the Module [mW]</div>
                     <div class='value' id='MeasPM'>0.000</div>
                     <div class='clear'></div>
                     <div class='measRightLabel'>Hotspot Temerature [&#8451;]</div>
@@ -114,7 +114,7 @@ else
                     <div class='input'><input type='text' class='input' id='NomSV' value='0.000'></div>
                     <div class='info' id='NomSVMax'>0.000</div>
                     <div class='clear'></div>
-                    <div class='nomLeftLabel'>Current Limit [mA]</div>
+                    <div class='nomLeftLabel'>Current Limit [µA]</div>
                     <div class='input'><input type='text' class='input' id='NomCL' value='0.000'></div>
                     <div class='info' id='NomCLMax'>0.000</div>
                 </div>
@@ -144,7 +144,7 @@ else
                 <div class='input'><input type='text' class='input' id='SupMaxTV' value='0.000'></div>
                 <div class='info' id='SupMaxTVMax'>0.000</div>
                 <div class='clear'></div>-->
-                <div class='supLabel'>max. Current [mA]</div>
+                <div class='supLabel'>max. Current [µA]</div>
                 <div class='input'><input type='text' class='input' id='SupMaxI' value='0.000'></div>
                 <div class='info' id='SupMaxIMax'>0.000</div>
                 <div class='frameSpace2'>&nbsp;</div>
